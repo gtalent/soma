@@ -2,8 +2,8 @@ from python:latest
 
 env PYTHONUNBUFFERED 1
 
-run apt-get update
-run apt-get install -y nginx
+#run apt-get update
+#run apt-get install -y nginx
 run mkdir /code
 workdir /code
 add requirements.txt /code/
