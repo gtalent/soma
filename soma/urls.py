@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from .settings import CHURCH_NAME
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 ]
+
+if CHURCH_NAME is not None:
+   admin.site.site_header = CHURCH_NAME + ' Administration'
+else:
+   admin.site.site_header = 'Soma Administration'
