@@ -1,45 +1,68 @@
 <html>
 	<head>
 		<title>Church Directory</title>
+		<style>
+			@page {
+				size: 14.8cm 21cm;
+			}
+			.personName {
+				font-size: 14;
+				font-weight: 600;
+			}
+			.fieldTitle {
+				font-weight: 600;
+			}
+			.directoryPicture {
+				float: right;
+			}
+			body {
+				font-size: 12;
+				font-family: "Sans-serif";
+			}
+		</style>
 	</head>
 	<body>
 		<h4>Church Directory</h4>
 		<br>
 		{% for person in people %}
-			<div>
-				<h5>{{ person.last_name }}, {{ person.first_name }}</h5>
+			<div class="page">
+				<div class="personName">{{ person.last_name }}, {{ person.first_name }}</div>
 
-				<img class="directoryPicture" src="/{{ person.picture }}"/>
-				<br>
-
-				{% if person.address_line1 %}
-					{{ person.address_line1 }}
-					<br>
+				{% if person.picture %}
+					<img class="directoryPicture" src="/{{ person.picture }}"/>
 				{% endif %}
 
-				{% if person.address_line2 %}
-					{{ person.address_line2 }}
-					<br>
-				{% endif %}
+				<div class="fieldTitle">Address</div>
+				<div class="address">
+					{% if person.address_line1 %}
+						{{ person.address_line1 }}
+						<br>
+					{% endif %}
 
-				{% if person.unit_number %}
-					Unit #{{ person.unit_number }}
-					<br>
-				{% endif %}
+					{% if person.address_line2 %}
+						{{ person.address_line2 }}
+						<br>
+					{% endif %}
+
+					{% if person.unit_number %}
+						Unit #{{ person.unit_number }}
+						<br>
+					{% endif %}
+				</div>
 
 				{% if person.home_number %}
-					<div class="fieldTitle">Home #</div>
+					<div class="fieldTitle">Home Number</div>
 					{{ person.home_number }}
 					<br>
 				{% endif %}
 
 				{% if person.cell_number %}
-					<div class="fieldTitle">Cell #</div>
+					<div class="fieldTitle">Cell Number</div>
 					{{ person.cell_number }}
 					<br>
 				{% endif %}
 			</div>
-			<hr>
+			<br>
 		{% endfor %}
 	</body>
 </html>

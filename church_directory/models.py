@@ -4,14 +4,14 @@ from django_resized import ResizedImageField
 PERSON_PICTURE_DIR = 'images/church_directory/person/pictures'
 
 NON_MEMBER = 0
-MEMBER = 1
+ACTIVE_MEMBER = 1
 HOMEBOUND_MEMBER = 2
 OUTOFAREA_MEMBER = 3
 FORMER_MEMBER = 4
 
 MEMBERSHIP_STATUS = (
 	 (NON_MEMBER, 'Non-member'),
-	 (MEMBER, 'Member'),
+	 (ACTIVE_MEMBER, 'Active Member'),
 	 (HOMEBOUND_MEMBER, 'Homebound Member'),
 	 (OUTOFAREA_MEMBER, 'Out-of-area Member'),
 	 (FORMER_MEMBER, 'Former Member'),
@@ -39,7 +39,7 @@ class Person(models.Model):
 	birthday = models.DateField()
 	home_number = models.CharField('Home Number', max_length=10, blank=True, null=True)
 	cell_number = models.CharField('Cell Number', max_length=10, blank=True, null=True)
-	email_address = models.CharField('Email Address', max_length=75)
+	email_address = models.CharField('Email Address', max_length=75, blank=True, null=True)
 	address_line1 = models.CharField('Address Line 1', max_length=50)
 	address_line2 = models.CharField('Address Line 2', max_length=50, null=True, blank=True)
 	unit_number = models.CharField('Apartment Number', max_length=10, null=True, blank=True)
