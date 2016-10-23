@@ -1,7 +1,7 @@
 from django.db import models
 from django_resized import ResizedImageField
 
-PERSON_PICTURE_DIR = 'images/church_directory/person/pictures'
+PERSON_PICTURE_DIR = 'static/images/church_directory/person/pictures'
 
 NON_MEMBER = 0
 ACTIVE_MEMBER = 1

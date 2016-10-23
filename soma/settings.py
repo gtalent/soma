@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'soma.wsgi.application'
 DB_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
 
 if not os.path.isfile(DB_PATH):
-	DB_PATH = '/var/db/soma.sqlite3'
+	DB_PATH = '/var/db/soma/soma.sqlite3'
 
 DATABASES = {
 	'default': {
