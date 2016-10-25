@@ -5,32 +5,48 @@
 			@page {
 				size: 14.8cm 21cm;
 			}
+			@page:right {
+				@bottom-right {
+					content: counter(page);
+				}
+			}
+			@page:left {
+				@bottom-left {
+					content: counter(page);
+				}
+			}
+			.directoryEntry {
+				page-break-inside: avoid;
+				height: auto;
+				min-height: 200px !important;
+			}
 			.personName {
-				font-size: 14;
+				font-size: 12pt;
 				font-weight: 600;
 			}
 			.fieldTitle {
 				font-weight: 600;
+				font-size: 12pt;
 			}
 			.directoryPicture {
 				float: right;
+				width: 110px;
+				height: 95px;
 			}
 			body {
-				font-size: 12;
+				font-size: 12pt;
 				font-family: "Sans-serif";
 			}
 		</style>
 	</head>
 	<body>
-		<h4>Church Directory</h4>
-		<br>
 		{% for person in people %}
-			<div class="page">
-				<div class="personName">{{ person.last_name }}, {{ person.first_name }}</div>
-
+			<div class="directoryEntry">
 				{% if person.picture %}
-					<img class="directoryPicture" src="/{{ person.picture }}"/>
+					<img class="directoryPicture" src="image://{{ person.picture }}"/>
 				{% endif %}
+
+				<div class="personName">{{ person.last_name }}, {{ person.first_name }}</div>
 
 				<div class="fieldTitle">Address</div>
 				<div class="address">
@@ -50,6 +66,12 @@
 					{% endif %}
 				</div>
 
+				{% if person.email_address %}
+					<div class="fieldTitle">Email Address</div>
+					{{ person.email_address }}
+					<br>
+				{% endif %}
+
 				{% if person.home_number %}
 					<div class="fieldTitle">Home Number</div>
 					{{ person.home_number }}
@@ -62,7 +84,6 @@
 					<br>
 				{% endif %}
 			</div>
-			<br>
 		{% endfor %}
 	</body>
 </html>

@@ -1,4 +1,4 @@
 django
 django-resized
-pdfkit
 pillow
+weasyprint
