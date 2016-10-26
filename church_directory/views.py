@@ -15,8 +15,8 @@ def _person_image_fetch(url):
 # Create your views here.
 
 @login_required
-def index(rqst):
-	people = Person.objects.all()
+def church_directory_pdf(rqst):
+	people = Person.objects.all().order_by('last_name', 'first_name')
 	t = loader.get_template('church_directory/person.html')
 	c = Context({'people': people})
 	html_doc = t.render(c)

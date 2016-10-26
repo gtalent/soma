@@ -1,13 +1,14 @@
-from python:latest
+FROM python:latest
 
-env PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED 1
 
-run mkdir /code
-workdir /code
-add requirements.txt /code/
-run pip install -r requirements.txt
-add . /code/
+RUN mkdir /code
+WORKDIR /code
+ADD requirements.txt /code/
+RUN pip install -r requirements.txt
+ADD . /code/
 
-expose 8000
+EXPOSE 8000
 
-cmd ["./manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["python"]
+CMD ["manage.py", "runserver", "0.0.0.0:8000"]
