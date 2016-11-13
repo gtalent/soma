@@ -16,23 +16,34 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SOMA_HOME = os.environ['SOMA_HOME']
+SOMA_HOME = os.environ['SOMA_HOME'] + '/'
 
-json_data = open(SOMA_HOME + '/config.json').read()
-config = json.loads(json_data)
-json_data = None
+CONFIG_JSON = 'config.json'
+config = {}
+if os.path.isfile(CONFIG_JSON):
+	json_data = open(SOMA_HOME + CONFIG_JSON).read()
+	config = json.loads(json_data)
+	json_data = None
 
 # application specific config data
 CHURCH_NAME = config['church_name']
 
-DB_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
+if 'soma_modules' in config:
+	SOMA_APPS = config['soma_modules']
+else:
+	SOMA_APPS = [
+		'church_directory',
+	]
 
-if not os.path.isfile(DB_PATH):
-	DB_PATH = '/var/lib/soma/db.sqlite3'
-
+if SOMA_HOME != None:
+	DB_PATH = SOMA_HOME + 'db.sqlite3'
+else:
+	DB_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
+	if not os.path.isfile(DB_PATH):
+		DB_PATH = '/var/lib/soma/db.sqlite3'
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '1k1evw2f8cd25^j_h9!jam5*1w-=e2kspk7ux*@56eeh!qq!-x'
@@ -44,13 +55,6 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
-if 'soma_modules' in config:
-	SOMA_APPS = config['soma_modules']
-else:
-	SOMA_APPS = [
-		'church_directory',
-	]
 
 INSTALLED_APPS = [
 	'django.contrib.admin',
@@ -89,9 +93,6 @@ TEMPLATES = [
 		},
 	},
 ]
-
-WSGI_APPLICATION = 'soma.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
