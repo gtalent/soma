@@ -15,7 +15,7 @@ def _person_image_fetch(url):
 
 # Create your views here.
 
-@login_required
+#@login_required
 def church_directory_pdf(rqst):
 	people = Person.objects.all().order_by('last_name', 'first_name')
 	for p in people:

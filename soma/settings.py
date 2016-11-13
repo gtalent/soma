@@ -10,14 +10,20 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
+import json
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+SOMA_HOME = os.environ['SOMA_HOME']
+
+json_data = open(SOMA_HOME + '/config.json').read()
+config = json.loads(json_data)
+json_data = None
 
 # application specific config data
-CHURCH_NAME = None
+CHURCH_NAME = config['church_name']
 
 DB_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
 
@@ -39,9 +45,12 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-SOMA_APPS = [
-	'church_directory',
-]
+if 'soma_modules' in config:
+	SOMA_APPS = config['soma_modules']
+else:
+	SOMA_APPS = [
+		'church_directory',
+	]
 
 INSTALLED_APPS = [
 	'django.contrib.admin',
@@ -131,3 +140,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = 'static_root'

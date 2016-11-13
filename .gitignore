@@ -1,4 +1,6 @@
 **/__pycache__
-images
+config.json
 db.sqlite3
 env
+images
+static_root
