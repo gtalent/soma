@@ -1,0 +1,8 @@
+version: "2"
+services:
+  soma:
+    build: .
+    ports:
+     - "80:8000"
+    volumes:
+     - "./soma_home:/soma_home"

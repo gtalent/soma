@@ -18,15 +18,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SOMA_HOME = os.environ['SOMA_HOME'] + '/'
 
-CONFIG_JSON = 'config.json'
+CONFIG_JSON = SOMA_HOME + 'config.json'
 config = {}
 if os.path.isfile(CONFIG_JSON):
-	json_data = open(SOMA_HOME + CONFIG_JSON).read()
+	json_data = open(CONFIG_JSON).read()
 	config = json.loads(json_data)
 	json_data = None
 
 # application specific config data
-CHURCH_NAME = config['church_name']
+if 'church_name' in config:
+	CHURCH_NAME = config['church_name']
+else:
+	CHURCH_NAME = None
 
 if 'soma_modules' in config:
 	SOMA_APPS = config['soma_modules']

@@ -6,6 +6,7 @@ RUN mkdir /soma_home /app
 WORKDIR /app
 ADD . /app
 RUN pip install -r requirements.txt
+RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
