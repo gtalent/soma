@@ -14,8 +14,17 @@ MEMBERSHIP_STATUS = (
 	 (ACTIVE_MEMBER, 'Active Member'),
 	 (HOMEBOUND_MEMBER, 'Homebound Member'),
 	 (OUTOFAREA_MEMBER, 'Out-of-area Member'),
-	 (FORMER_MEMBER, 'Former Member'),
 )
+
+def membership_status_str(status):
+	if status == NON_MEMBER:
+		return MEMBERSHIP_STATUS[0][1]
+	elif status == ACTIVE_MEMBER:
+		return MEMBERSHIP_STATUS[1][1]
+	elif status == HOMEBOUND_MEMBER:
+		return MEMBERSHIP_STATUS[2][1]
+	elif status == OUTOFAREA_MEMBER:
+		return MEMBERSHIP_STATUS[3][1]
 
 MALE = 0
 FEMALE = 1
@@ -54,6 +63,6 @@ class Person(models.Model):
 		return self.first_name + ' ' + self.last_name
 
 class MembershipStatusChange(models.Model):
-   person = models.IntegerField(primary_key=True)
-   begin_date = models.DateField()
-   end_date = models.DateField(null=True)
+	person = models.IntegerField(primary_key=True)
+	begin_date = models.DateField()
+	end_date = models.DateField(null=True)
