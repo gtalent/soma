@@ -1,5 +1,6 @@
 from django.db import models
 from django_resized import ResizedImageField
+from soma.settings import SOMA_HOME
 
 PERSON_PICTURE_DIR = 'images/church_directory/person/pictures'
 

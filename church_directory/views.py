@@ -5,12 +5,12 @@ from django.template import Context, loader
 import weasyprint
 import os
 from .models import Person, membership_status_str, PERSON_PICTURE_DIR
-from soma.settings import CHURCH_NAME
+from soma.settings import CHURCH_NAME, SOMA_HOME, MEDIA_ROOT
 
 def _person_image_fetch(url):
 	prefix = 'image://'
 	if url.startswith(prefix):
-		url = 'file://' + os.path.abspath(url[len(prefix):])
+		url = 'file://' + os.path.abspath(MEDIA_ROOT + url[len(prefix):])
 	return weasyprint.default_url_fetcher(url)
 
 # Create your views here.
