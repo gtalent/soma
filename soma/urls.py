@@ -20,7 +20,7 @@ from . import settings
 
 urlpatterns = [
 	url(r'^admin/', admin.site.urls),
-] + static('static', document_root='static_root') + static('images', document_root='images')
+] + static('static', document_root='static_root')
 
 for pkg in settings.SOMA_APPS:
 	urlpatterns.append(url(r'^' + pkg + '/', include(pkg + '.urls')))

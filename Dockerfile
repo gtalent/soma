@@ -4,8 +4,11 @@ ENV PYTHONUNBUFFERED 1
 
 RUN mkdir /soma_home /app
 WORKDIR /app
-ADD . /app
+# install requirements first, so unrelated changes
+# don't require rerunning this part
+ADD requirements.txt /app
 RUN pip install -r requirements.txt
+ADD . /app
 RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput
 
