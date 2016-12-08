@@ -47,6 +47,12 @@ else:
 		'church_directory',
 	]
 
+if 'allowed_hosts' in config:
+	ALLOWED_HOSTS = config['allowed_hosts']
+else:
+	ALLOWED_HOSTS = []
+
+
 if SOMA_HOME != None:
 	DB_PATH = SOMA_HOME + 'db.sqlite3'
 else:
@@ -62,9 +68,6 @@ SECRET_KEY = '1k1evw2f8cd25^j_h9!jam5*1w-=e2kspk7ux*@56eeh!qq!-x'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
-
 
 # Application definition
 
