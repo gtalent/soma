@@ -96,7 +96,9 @@ ROOT_URLCONF = 'soma.urls'
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
-		'DIRS': [],
+		'DIRS': [
+			SOMA_HOME + "templates"
+		],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
