@@ -20,7 +20,7 @@ def church_directory_pdf(rqst):
 	people = Person.objects.all().order_by('last_name', 'first_name')
 	for p in people:
 		p.membership_status = membership_status_str(p.membership_status)
-	t = loader.get_template('church_directory/person.html')
+	t = loader.get_template(SOMA_HOME + '/templates/church_directory.html')
 	c = Context({'people': people, 'church_name': CHURCH_NAME})
 	html_doc = t.render(c)
 	#return HttpResponse(html_doc)
