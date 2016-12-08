@@ -15,5 +15,4 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-ENTRYPOINT ["gunicorn"]
-CMD ["soma.wsgi:application", "--log-level=info", "--bind=0.0.0.0:8000"]
+CMD ["gunicorn", "soma.wsgi:application", "--log-level=info", "--bind=0.0.0.0:8000"]
