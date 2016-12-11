@@ -9,23 +9,29 @@ ACTIVE_MEMBER = 1
 HOMEBOUND_MEMBER = 2
 OUTOFAREA_MEMBER = 3
 FORMER_MEMBER = 4
+DECEASED = 5
 
 MEMBERSHIP_STATUS = (
 	 (NON_MEMBER, 'Non-member'),
 	 (ACTIVE_MEMBER, 'Active Member'),
 	 (HOMEBOUND_MEMBER, 'Homebound Member'),
 	 (OUTOFAREA_MEMBER, 'Out-of-area Member'),
+	 (FORMER_MEMBER, 'Former Member'),
+	 (DECEASED, 'Deceased'),
 )
 
 def membership_status_str(status):
-	if status == NON_MEMBER:
-		return MEMBERSHIP_STATUS[0][1]
-	elif status == ACTIVE_MEMBER:
-		return MEMBERSHIP_STATUS[1][1]
+	return MEMBERSHIP_STATUS[status][1]
+
+def is_member(status):
+	if status == ACTIVE_MEMBER:
+		return True
 	elif status == HOMEBOUND_MEMBER:
-		return MEMBERSHIP_STATUS[2][1]
+		return True
 	elif status == OUTOFAREA_MEMBER:
-		return MEMBERSHIP_STATUS[3][1]
+		return True
+	elif status == FORMER_MEMBER:
+		return True
 
 MALE = 0
 FEMALE = 1
@@ -51,7 +57,7 @@ class Person(models.Model):
 	email_address = models.CharField('Email Address', max_length=75, blank=True, null=True)
 	address_line1 = models.CharField('Address Line 1', max_length=50)
 	address_line2 = models.CharField('Address Line 2', max_length=50, null=True, blank=True)
-	unit_number = models.CharField('Apartment Number', max_length=10, null=True, blank=True)
+	unit_number = models.CharField('Unit Number', max_length=10, null=True, blank=True)
 	membership_status = models.IntegerField(choices=MEMBERSHIP_STATUS)
 	father = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='father_child', null=True, blank=True)
 	mother = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='mother_child', null=True, blank=True)

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import Context, loader
 import weasyprint
 import os
+from datetime import datetime
 from .models import Person, membership_status_str, PERSON_PICTURE_DIR
 from soma.settings import CHURCH_NAME, SOMA_HOME, MEDIA_ROOT
 
@@ -18,10 +19,16 @@ def _person_image_fetch(url):
 @login_required
 def church_directory_pdf(rqst):
 	people = Person.objects.all().order_by('last_name', 'first_name')
+	now = datetime.now()
 	for p in people:
 		p.membership_status = membership_status_str(p.membership_status)
 	t = loader.get_template(SOMA_HOME + '/templates/church_directory.html')
-	c = Context({'people': people, 'church_name': CHURCH_NAME})
+	c = Context({
+		'people': people,
+		'church_name': CHURCH_NAME,
+		'month_name': now.strftime('%B'),
+		'year': now.year
+	})
 	html_doc = t.render(c)
 	#return HttpResponse(html_doc)
 	pdf_doc = weasyprint.HTML(string=html_doc, url_fetcher=_person_image_fetch).write_pdf()
