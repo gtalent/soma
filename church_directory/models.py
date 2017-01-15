@@ -12,12 +12,12 @@ FORMER_MEMBER = 4
 DECEASED = 5
 
 MEMBERSHIP_STATUS = (
-	 (NON_MEMBER, 'Non-member'),
-	 (ACTIVE_MEMBER, 'Active Member'),
-	 (HOMEBOUND_MEMBER, 'Homebound Member'),
-	 (OUTOFAREA_MEMBER, 'Out-of-area Member'),
-	 (FORMER_MEMBER, 'Former Member'),
-	 (DECEASED, 'Deceased'),
+	(NON_MEMBER, 'Non-member'),
+	(ACTIVE_MEMBER, 'Active Member'),
+	(HOMEBOUND_MEMBER, 'Homebound Member'),
+	(OUTOFAREA_MEMBER, 'Out-of-area Member'),
+	(FORMER_MEMBER, 'Former Member'),
+	(DECEASED, 'Deceased'),
 )
 
 def membership_status_str(status):
@@ -37,8 +37,8 @@ MALE = 0
 FEMALE = 1
 
 SEXES = (
-	 (MALE, 'Male'),
-	 (FEMALE, 'Female'),
+	(MALE, 'Male'),
+	(FEMALE, 'Female'),
 )
 
 
