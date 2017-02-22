@@ -40,6 +40,11 @@ if 'church_name' in config:
 else:
 	CHURCH_NAME = None
 
+if 'debug' in config:
+	DEBUG = config['debug'] == True
+else:
+	DEBUG = False
+
 if 'soma_modules' in config:
 	SOMA_APPS = config['soma_modules']
 else:
@@ -65,9 +70,6 @@ else:
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '1k1evw2f8cd25^j_h9!jam5*1w-=e2kspk7ux*@56eeh!qq!-x'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
 
 # Application definition
 
