@@ -2,8 +2,10 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from . import settings
+from . import views
 
 urlpatterns = [
+	url(r'^authenticate/', views.authenticate_view),
 	url(r'^admin/', admin.site.urls),
 ] + static('static', document_root='static_root') + static('images', document_root=settings.MEDIA_ROOT + '/images')
 

@@ -41,6 +41,9 @@ SEXES = (
 	(FEMALE, 'Female'),
 )
 
+def sex_str(sex):
+	return SEXES[sex][1]
+
 
 # Create your models here.
 
