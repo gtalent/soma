@@ -69,15 +69,15 @@ class PersonView extends React.Component {
 	}
 
 	emailBtn = (name, val) => {
-		window.location.href = 'mailto:' + this.state.emailAddress;
+		window.location.href = 'mailto:' + this.state.person.email_address;
 	};
 
 	cellPhoneBtn = (name, val) => {
-		window.location.href = 'tel:+1' + this.state.cellNumber;
+		window.location.href = 'tel:+1' + this.state.person.cell_number;
 	};
 
 	homePhoneBtn = (name, val) => {
-		window.location.href = 'tel:+1' + this.state.homeNumber;
+		window.location.href = 'tel:+1' + this.state.person.home_number;
 	};
 
 	render() {
@@ -86,9 +86,15 @@ class PersonView extends React.Component {
 		return (
 			<div style={{maxWidth: '900px', margin: '0 auto', display: 'flex'}}>
 				<div style={{minWidth: '350px'}}>
-					{p.image_url ? (
-							<img src={'/api/' + p.image_url} width='97%' alt={p.first_name + ' ' + p.last_name}/>
-						) : null}
+					{
+						p.image_url ? (
+							<img
+								src={'/api/' + p.image_url}
+								alt={p.first_name + ' ' + p.last_name}
+								width='97%'
+							/>
+						) : null
+					}
 				</div>
 				<div style={{minWidth: '350px'}}>
 					<RaisedButton style={btnStyle} onClick={this.cellPhoneBtn} label='Call Cell' disabled={!p.cell_number}/>
