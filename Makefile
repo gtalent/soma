@@ -9,14 +9,14 @@ build:
 run:
 	docker run --rm -i -v $(shell pwd):/usr/src/project \
 		-e LOCAL_USER_ID=$(shell id -u ${USER}) \
-		-p 80:8000 \
+		-p 8000:8000 \
 		-v $(shell pwd):/app \
 		-v $(shell pwd)/soma_home:/soma_home \
 		-t ${DEVENV_IMAGE} \
 		./manage.py runserver 0.0.0.0:8000
 migrate:
-	${ENV_RUN} ./manage.py makemigrations
-	${ENV_RUN} ./manage.py migrate
+	${ENV_RUN} ./api_server/manage.py makemigrations
+	${ENV_RUN} ./api_server/manage.py migrate
 
 devenv:
 	docker run -d -v $(shell pwd):/usr/src/project \

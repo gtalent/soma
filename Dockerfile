@@ -15,13 +15,15 @@ ADD docker/entrypoint.sh /
 ENV PYTHONUNBUFFERED 1
 
 ENV SOMA_HOME /soma_home
-RUN mkdir $SOMA_HOME /app
+RUN mkdir -p $SOMA_HOME /app/api_server
 WORKDIR /app
 # install requirements first, so unrelated changes
 # don't require rerunning this part
-ADD requirements.txt /app
-RUN pip install -r requirements.txt
-ADD . /app
+ADD api_server/requirements.txt /app/api_server/
+RUN pip install -r api_server/requirements.txt
+ADD api_server /app/api_server
+
+WORKDIR /app/api_server
 RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput
 

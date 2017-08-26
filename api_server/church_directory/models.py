@@ -1,6 +1,13 @@
+
 from django.db import models
 from django_resized import ResizedImageField
 from soma.settings import SOMA_HOME
+
+def _create_reverse_lookup(s):
+    out = {}
+    for i in s:
+        out[i[1]] = i[0]
+    return out
 
 PERSON_PICTURE_DIR = 'images/church_directory/person/pictures'
 
@@ -19,6 +26,10 @@ MEMBERSHIP_STATUS = (
     (FORMER_MEMBER, 'Former Member'),
     (DECEASED, 'Deceased'),
 )
+MEMBERSHIP_STATUS_REV = _create_reverse_lookup(MEMBERSHIP_STATUS)
+
+def membership_status_int(status):
+    return MEMBERSHIP_STATUS_REV[status]
 
 def membership_status_str(status):
     return MEMBERSHIP_STATUS[status][1]
@@ -37,12 +48,27 @@ MALE = 0
 FEMALE = 1
 
 SEXES = (
-	(MALE, 'Male'),
-	(FEMALE, 'Female'),
+    (MALE, 'Male'),
+    (FEMALE, 'Female'),
+)
+
+SINGLE = 1
+MARRIED = 2
+
+MARITAL_STATUSES = (
+    (0, 'N/A'),
+    (SINGLE, 'Single'),
+    (MARRIED, 'Married'),
 )
 
 def sex_str(sex):
     return SEXES[sex][1]
+
+def sex_int(sex):
+    if sex == 'Male':
+        return MALE
+    elif sex == 'Female':
+        return FEMALE
 
 
 # Create your models here.
@@ -53,19 +79,20 @@ class Person(models.Model):
     middle_name = models.CharField('Middle Name', max_length=50, null=True, blank=True)
     last_name = models.CharField('Last Name', max_length=50)
     suffix = models.CharField('Suffix', max_length=5, null=True, blank=True)
+    marital_status = models.IntegerField(choices=MARITAL_STATUSES)
     sex = models.IntegerField(choices=SEXES)
-    birthday = models.DateField()
-    home_number = models.CharField('Home Number', max_length=10, blank=True, null=True)
-    cell_number = models.CharField('Cell Number', max_length=10, blank=True, null=True)
+    birthday = models.DateField(null=True)
+    home_phone = models.CharField('Home Number', max_length=10, blank=True, null=True)
+    cell_phone = models.CharField('Cell Number', max_length=10, blank=True, null=True)
     email_address = models.CharField('Email Address', max_length=75, blank=True, null=True)
-    address_line1 = models.CharField('Address Line 1', max_length=50)
+    address_line1 = models.CharField('Address Line 1', max_length=50, blank=True, null=True)
     address_line2 = models.CharField('Address Line 2', max_length=50, null=True, blank=True)
-    unit_number = models.CharField('Unit Number', max_length=10, null=True, blank=True)
     membership_status = models.IntegerField(choices=MEMBERSHIP_STATUS)
     father = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='father_child', null=True, blank=True)
     mother = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='mother_child', null=True, blank=True)
     spouse = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='person_spouse', null=True, blank=True)
-    picture = ResizedImageField(size=[150, 130], crop=['middle', 'center'], upload_to=PERSON_PICTURE_DIR, null=True, blank=True)
+    notes = models.TextField('notes', null=True, blank=True)
+    picture = ResizedImageField(size=[300, 260], crop=['middle', 'center'], upload_to=PERSON_PICTURE_DIR, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'People'
