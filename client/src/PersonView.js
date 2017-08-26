@@ -1,13 +1,12 @@
 
 import axios from 'axios';
 import React from 'react';
-import {
-	RaisedButton,
-	Table,
+import Button from 'material-ui/Button';
+import Table, {
 	TableBody,
 	TableRow,
-	TableRowColumn,
-} from 'material-ui';
+	TableCell,
+} from 'material-ui/Table';
 import { HOST_ADDR } from './consts';
 
 class PersonView extends React.Component {
@@ -35,8 +34,8 @@ class PersonView extends React.Component {
 	buildRow = (name, value) => {
 		return value ? (
 			<TableRow>
-				<TableRowColumn>{name}</TableRowColumn>
-				<TableRowColumn>{this.buildElements(value)}</TableRowColumn>
+				<TableCell>{name}</TableCell>
+				<TableCell>{this.buildElements(value)}</TableCell>
 			</TableRow>
 		) : null;
 	};
@@ -97,12 +96,20 @@ class PersonView extends React.Component {
 					}
 				</div>
 				<div style={{minWidth: '350px'}}>
-					<RaisedButton style={btnStyle} onClick={this.cellPhoneBtn} label='Call Cell' disabled={!p.cell_number}/>
-					<RaisedButton style={btnStyle} onClick={this.homePhoneBtn} label='Call Home' disabled={!p.home_number}/>
-					<RaisedButton style={btnStyle} onClick={this.emailBtn} label='Email' disabled={!p.email_address}/>
-					<RaisedButton style={btnStyle} label='Edit' secondary={true}/>
-					<Table selectable={false}>
-						<TableBody displayRowCheckbox={false}>
+					<Button raised style={btnStyle} onClick={this.cellPhoneBtn} disabled={!p.cell_number}>
+						Call Cell
+					</Button>
+					<Button raised style={btnStyle} onClick={this.homePhoneBtn} disabled={!p.home_number}>
+						Call Home
+					</Button>
+					<Button raised style={btnStyle} onClick={this.emailBtn} disabled={!p.email_address}>
+						Email
+					</Button>
+					<Button raised style={btnStyle} color='accent'>
+						Edit
+					</Button>
+					<Table>
+						<TableBody>
 							{this.buildRow('Name', p.first_name + ' ' + p.last_name)}
 							{this.buildRow('Home Phone', p.home_number)}
 							{this.buildRow('Cell Phone', p.cell_number)}

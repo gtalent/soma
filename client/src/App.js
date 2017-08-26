@@ -5,10 +5,10 @@ import {
 	Redirect,
 	Route,
 } from 'react-router-dom';
-import theme from 'material-ui/styles/baseThemes/lightBaseTheme';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import createMuiTheme from 'material-ui/styles/theme';
 import {
 	MuiThemeProvider,
+	Toolbar,
 } from 'material-ui';
 import './App.css';
 import Directory from './Directory';
@@ -27,10 +27,11 @@ class App extends React.Component {
 		if (this.state.loggedIn) {
 			appRoot = (
 				<div>
+					<Toolbar/>
 					<Route exact path='/' render={() => (
 						<Redirect to="/church_directory/page/0/"/>
 					)}/>
-					<Route path='/church_directory/page/' render={() => (
+					<Route path='/church_directory/page/' component={() => (
 						<div>
 							<Directory membershipStatus={
 									[
@@ -54,7 +55,7 @@ class App extends React.Component {
 		}
 		return (
 			<Router>
-				<MuiThemeProvider muiTheme={getMuiTheme(theme)}>
+				<MuiThemeProvider theme={createMuiTheme()}>
 					<div>
 						{appRoot}
 					</div>

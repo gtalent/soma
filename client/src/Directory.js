@@ -2,18 +2,20 @@
 import axios from 'axios';
 import React from 'react';
 import {
-	Link,
 	Redirect,
 	Route,
 } from 'react-router-dom';
-import {
-	Card,
+import Button from 'material-ui/Button';
+import Card, {
 	CardActions,
+	CardContent,
 	CardHeader,
-	CardText,
+} from 'material-ui/Card';
+import IconButton from 'material-ui/IconButton';
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import Collapse from 'material-ui/transitions/Collapse';
+import {
 	Divider,
-	FlatButton,
-	RaisedButton,
 } from 'material-ui';
 import { HOST_ADDR } from './consts';
 
@@ -24,6 +26,7 @@ class DirectoryEntry extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			expanded: false,
 			personId: props.personId,
 			name: props.name,
 			membershipStatus: props.membershipStatus,
@@ -63,28 +66,44 @@ class DirectoryEntry extends React.Component {
 				<Card>
 					<CardHeader
 						title={this.state.name}
-						subtitle={this.state.membershipStatus}
-						actAsExpander={true}
-						showExpandableButton={true}
+						subheader={this.state.membershipStatus}
 					/>
-					<CardActions>
-						<FlatButton label='Call Cell' onClick={this.cellPhoneBtn} disabled={!this.state.cellNumber}/>
-						<FlatButton label='Call Home' onClick={this.homePhoneBtn} disabled={!this.state.homeNumber}/>
-						<FlatButton label='Email' onClick={this.emailBtn} disabled={!this.state.emailAddress}/>
-						<Link to={'/person/' + this.state.personId + '/'}>
-							<FlatButton label='View' primary={true}/>
-						</Link>
-						<FlatButton label='Edit' secondary={true}/>
+					<CardActions disableActionSpacing>
+						<Button onClick={this.cellPhoneBtn} disabled={!this.state.cellNumber}>
+							Call Cell
+						</Button>
+						<Button onClick={this.homePhoneBtn} disabled={!this.state.homeNumber}>
+							Call Home
+						</Button>
+						<Button onClick={this.emailBtn} disabled={!this.state.emailAddress}>
+							Email
+						</Button>
+						<Button color='primary' href={'/person/' + this.state.personId + '/'}>
+							View
+						</Button>
+						<Button color='accent'>
+							Edit
+						</Button>
+						<div style={{flex: '1 1 auto'}}/>
+						<IconButton
+							onClick={() => this.setState({expanded: !this.state.expanded})}
+							aria-expanded={this.state.expanded}
+							aria-label="Show more"
+						>
+							<ExpandMoreIcon/>
+						</IconButton>
 					</CardActions>
-					<CardText expandable={true}>
-						{this.state.addressLine1}
-						<br/>
-						{this.state.addressLine2}
-						<Divider/>
-						{this.field('Cell', this.state.cellNumber)}
-						{this.field('Home', this.state.homeNumber)}
-						{this.field('Email', this.state.emailAddress)}
-					</CardText>
+					<Collapse in={this.state.expanded} transitionDuration="auto" unmountOnExit>
+						<CardContent>
+							{this.state.addressLine1}
+							<br/>
+							{this.state.addressLine2}
+							<Divider/>
+							{this.field('Cell', this.state.cellNumber)}
+							{this.field('Home', this.state.homeNumber)}
+							{this.field('Email', this.state.emailAddress)}
+						</CardContent>
+					</Collapse>
 				</Card>
 			</div>
 		);
@@ -202,7 +221,7 @@ class Directory extends React.Component {
 		} else {
 			return (
 				<div>
-					<Route exact path='/church_directory/page/' render={() => (
+					<Route exact path='/church_directory/page/' component={() => (
 						<Redirect to="/church_directory/page/0/"/>
 					)}/>
 					<Route path='/church_directory/page/:page/' component={({match}) => {
@@ -210,20 +229,22 @@ class Directory extends React.Component {
 						return (
 							<div style={{maxWidth: '700px', margin: '0 auto'}}>
 								<div style={{display: 'flex', justifyContent: 'center'}}>
-									<RaisedButton
-										label='Prev'
+									<Button raised
 										style={btnStyle}
-										primary={true}
+										color='primary'
 										disabled={page < 1}
 										onClick={(event) => this.updatePage(page - 1)}
-									/>
-									<RaisedButton
-										label='Next'
+									>
+										Prev
+									</Button>
+									<Button raised
 										style={btnStyle}
-										primary={true}
+										color='primary'
 										disabled={page >= this.state.pages}
 										onClick={(event) => this.updatePage(page + 1)}
-									/>
+									>
+										Next
+									</Button>
 								</div>
 								<DirectoryPage
 									membershipStatus={this.state.membershipStatus}

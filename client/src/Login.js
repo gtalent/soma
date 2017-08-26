@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React from 'react';
 import { HOST_ADDR } from './consts';
+import Button from 'material-ui/Button';
 import {
 	Divider,
 	Paper,
-	RaisedButton,
 	TextField,
 } from 'material-ui';
 
@@ -52,22 +52,22 @@ class Login extends React.Component {
 		return (
 			<div style={{textAlign: 'center'}}>
 				<Paper style={style}>
-					<TextField underlineShow={true}
-					           hintText='Email'
+					<TextField label='Email'
 								  onChange={this.handleEmailChange}
 					/>
 					<Divider/>
-					<TextField underlineShow={true}
-					           hintText='Password'
+					<TextField label='Password'
 					           type='password'
 								  onChange={this.handlePasswordChange}
 					/>
 					<Divider/>
-					<RaisedButton label='Sign In'
+					<Button raised
 					              style={{width: style.width * 0.75}}
-					              primary={true}
+									  color='primary'
 					              onClick={this.loginClick}
-					/>
+					>
+						 Sign In
+					</Button>
 				</Paper>
 			</div>
 		);
