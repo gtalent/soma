@@ -34,6 +34,8 @@ def fix_phone(number):
         c = ord(v)
         if c >= ord('0') and c <= ord('9'):
             out += v
+    if len(out) != 10:
+        out = None
     return out
 
 class Command(BaseCommand):
@@ -61,14 +63,8 @@ class Command(BaseCommand):
                     else:
                         p.marital_status = 1
                     p.sex = sex_int(row['Gender'])
-                    p.home_phone = row['Home Phone']
-                    p.home_phone = fix_phone(p.home_phone)
-                    if len(p.home_phone) == 0:
-                        p.home_phone = None
-                    p.cell_phone = row['Cell Phone']
-                    p.cell_phone = fix_phone(p.cell_phone)
-                    if len(p.cell_phone) == 0:
-                        p.cell_phone = None
+                    p.home_phone = fix_phone(row['Home Phone'])
+                    p.cell_phone = fix_phone(row['Cell Phone'])
                     p.email_address = row['E-Mail']
                     p.address_line1 = row['Address']
                     p.address_line2 = row['Address Line 2']
