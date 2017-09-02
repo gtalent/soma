@@ -1,18 +1,16 @@
 
 import axios from 'axios';
 import React from 'react';
-import {
-	Link,
-} from 'react-router-dom';
 import Button from 'material-ui/Button';
 import Table, {
 	TableBody,
 	TableCell,
 	TableRow,
 } from 'material-ui/Table';
+import TextField from 'material-ui/TextField';
 import { HOST_ADDR } from './consts';
 
-class PersonView extends React.Component {
+class PersonEdit extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -34,15 +32,6 @@ class PersonView extends React.Component {
 		}
 	};
 
-	buildRow = (name, value) => {
-		return value ? (
-			<TableRow>
-				<TableCell>{name}</TableCell>
-				<TableCell>{this.buildElements(value)}</TableCell>
-			</TableRow>
-		) : null;
-	};
-
 	componentDidMount(prevProps, prevState) {
 		let dir = this;
 		let ct = axios.CancelToken.source();
@@ -54,7 +43,9 @@ class PersonView extends React.Component {
 		}).then((response) => {
 			if (response.status === 200) {
 				dir.setState({person: response.data});
-				dir.cancelTokens.splice(dir.cancelTokens.indexOf(ct), 1);
+				for (let i in dir.cancelTokens) {
+					dir.cancelTokens.splice(i, 1);
+				}
 			}
 		}).catch((thrown) => {
 		});
@@ -62,11 +53,38 @@ class PersonView extends React.Component {
 	}
 
 	componentWillUnmount(prevProps, prevState) {
-		for (let v of this.cancelTokens) {
-			v.cancel();
+		for (let i in this.cancelTokens) {
+			this.cancelTokens[i].cancel();
 		}
 		this.cancelTokens = [];
 	}
+
+	createTextField = (name, valName) => (
+		<TextField
+			label={name}
+			value={this.state.person[valName] || ''}
+			style={{marginLeft: 10}}
+			onChange={event => {
+				let s = this.state;
+				s.person[valName] = event.target.value;
+				this.setState(s);
+			}}
+		/>
+	);
+
+	createDateField = (name, valName) => (
+		<TextField
+			type='date'
+			label={name}
+			value={this.state.person[valName] || ''}
+			style={{marginLeft: 10}}
+			onChange={event => {
+				let s = this.state;
+				s.person[valName] = event.target.value;
+				this.setState(s);
+			}}
+		/>
+	);
 
 	emailBtn = (name, val) => {
 		window.location.href = 'mailto:' + this.state.person.email_address;
@@ -82,7 +100,6 @@ class PersonView extends React.Component {
 
 	render() {
 		let p = this.state.person;
-		let btnStyle = {margin: 5};
 		return (
 			<div style={{maxWidth: '900px', margin: '0 auto', display: 'flex'}}>
 				<div style={{minWidth: '350px'}}>
@@ -97,32 +114,35 @@ class PersonView extends React.Component {
 					}
 				</div>
 				<div style={{minWidth: '350px'}}>
-					<Button raised style={btnStyle} onClick={this.cellPhoneBtn} disabled={!p.cell_number}>
-						Call Cell
-					</Button>
-					<Button raised style={btnStyle} onClick={this.homePhoneBtn} disabled={!p.home_number}>
-						Call Home
-					</Button>
-					<Button raised style={btnStyle} onClick={this.emailBtn} disabled={!p.email_address}>
-						Email
-					</Button>
-					<Button
-						raised
-						style={btnStyle}
-						color='accent'
-						component={Link}
-						to={'/person/edit/' + this.state.personId + '/'}
-					>
-						Edit
-					</Button>
+					<div>
+						<Button raised disabled style={{margin: 5}} color='primary'>
+							Save
+						</Button>
+					</div>
 					<Table>
 						<TableBody>
-							{this.buildRow('Name', p.first_name + ' ' + p.last_name)}
-							{this.buildRow('Home Phone', p.home_number)}
-							{this.buildRow('Cell Phone', p.cell_number)}
-							{this.buildRow('Email', p.email_address)}
-							{this.buildRow('Address', [p.address_line1, p.address_line2])}
-							{this.buildRow('Birthday', p.birthday)}
+							<TableRow>
+								<TableCell>Basic Info</TableCell>
+								<TableCell>
+									<div>
+										{this.createTextField('First Name', 'first_name')}
+										{this.createTextField('Last Name', 'last_name')}
+									</div>
+									<div>{this.createDateField('Birthday', 'birthday')}</div>
+								</TableCell>
+							</TableRow>
+							<TableRow>
+								<TableCell>Contact</TableCell>
+								<TableCell>
+									<div>
+										{this.createTextField('Home Phone', 'home_number')}
+										{this.createTextField('Cell Phone', 'cell_number')}
+									</div>
+									{this.createTextField('Address Line 1', 'address_line1')}
+									{this.createTextField('Address Line 2', 'address_line2')}
+									<div>{this.createTextField('Email', 'email_address')}</div>
+								</TableCell>
+							</TableRow>
 						</TableBody>
 					</Table>
 				</div>
@@ -132,4 +152,4 @@ class PersonView extends React.Component {
 
 };
 
-export default PersonView;
+export default PersonEdit;

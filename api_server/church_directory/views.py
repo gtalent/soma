@@ -29,7 +29,7 @@ def _build_membership_filter(ms):
 
 def _delimit_phone_number(num):
     if num != None and len(num) == 10:
-        return '(' + num[:3] + ') ' + num[3:6] + '-' + num[6:10]
+        return num[:3] + '-' + num[3:6] + '-' + num[6:10]
 
 def _jsonify_person(person):
     return {
@@ -44,10 +44,8 @@ def _jsonify_person(person):
         'home_number': _delimit_phone_number(person.home_phone),
         'cell_number': _delimit_phone_number(person.cell_phone),
         'email_address': person.email_address,
-        'address': {
-            'address_line1': person.address_line1,
-            'address_line2': person.address_line2,
-        },
+        'address_line1': person.address_line1,
+        'address_line2': person.address_line2,
         'membership_status': membership_status_str(person.membership_status),
         'father': person.father.person_id if person.father else None,
         'mother': person.mother.person_id if person.mother else None,
@@ -61,7 +59,9 @@ def church_directory_pdf(rqst):
         people = Person.objects.all().order_by('last_name', 'first_name')
         now = datetime.now()
         for p in people:
-                p.membership_status = membership_status_str(p.membership_status)
+            p.membership_status = membership_status_str(p.membership_status)
+            p.home_phone = _delimit_phone_number(p.home_phone)
+            p.cell_phone = _delimit_phone_number(p.cell_phone)
         t = loader.get_template(SOMA_HOME + '/templates/church_directory.html')
         c = {
             'people': people,
@@ -81,7 +81,7 @@ def church_directory_pdf(rqst):
 @login_required
 def directory_page(rqst):
     if rqst.method == 'POST':
-        data = json.loads(rqst.body)
+        data = json.loads(rqst.body.decode('utf-8'))
         try:
             ms = data['membership_status']
         except KeyError:
@@ -107,7 +107,7 @@ def directory_page(rqst):
 @login_required
 def group_stat(rqst):
     if rqst.method == 'POST':
-        data = json.loads(rqst.body)
+        data = json.loads(rqst.body.decode('utf-8'))
         try:
             ms = data['membership_status']
         except KeyError:
@@ -123,7 +123,7 @@ def group_stat(rqst):
 @login_required
 def person(rqst):
     if rqst.method == 'POST':
-        data = json.loads(rqst.body)
+        data = json.loads(rqst.body.decode('utf-8'))
         person_id = None
         try:
             person_id = data['person_id']

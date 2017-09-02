@@ -7,18 +7,23 @@
 # Either use the LOCAL_USER_ID if passed in at runtime or
 # fallback
 
-if [[ $LOCAL_USER_ID == "" ]]; then
-	LOCAL_USER_ID=-9001
-fi
-
-if [[ $LOCAL_USER_ID != -9001 ]]; then
+if [[ $LOCAL_USER_ID != "" ]]; then
 	if [[ $(id -u user 2> /dev/null) != $LOCAL_USER_ID ]]; then
 		useradd --shell /bin/bash -u $LOCAL_USER_ID -o -c "" -m user
 		export HOME=/home/user
 		echo "set -o vi" >> $HOME/.bashrc
 	fi
 
-	exec /usr/local/bin/gosu user "$@"
+	cmd_prefix="/usr/local/bin/gosu user"
+fi
+
+if [[ "$@" == "" ]]; then
+	$cmd_prefix gunicorn -D soma.wsgi:application --log-level=info --bind=0.0.0.0:8000 \
+		--log-file="$SOMA_HOME/gunicorn.log"
+	$cmd_prefix caddy -conf=/app/Caddyfile
+elif [[ "$@" == "devserver" ]]; then
+	$cmd_prefix python3 ./manage.py runserver 0.0.0.0:8000 &
+	$cmd_prefix caddy -conf=/app/Caddyfile
 else
-	exec "$@"
+	$cmd_prefix "$@"
 fi

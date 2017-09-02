@@ -31,8 +31,7 @@ def birthday(row):
 def fix_phone(number):
     out = ''
     for v in number:
-        c = ord(v)
-        if c >= ord('0') and c <= ord('9'):
+        if v >= '0' and v <= '9':
             out += v
     if len(out) != 10:
         out = None

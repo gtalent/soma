@@ -3,6 +3,7 @@ services:
   soma:
     build: .
     ports:
-     - "80:8000"
+     - "2010:2010"
+     - "2015:2015"
     volumes:
      - "./soma_home:/soma_home"

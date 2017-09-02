@@ -9,11 +9,22 @@ build:
 run:
 	docker run --rm -i -v $(shell pwd):/usr/src/project \
 		-e LOCAL_USER_ID=$(shell id -u ${USER}) \
+		-p 2010:2010 \
+		-p 2015:2015 \
 		-p 8000:8000 \
-		-v $(shell pwd):/app \
+		-v $(shell pwd)/api_server:/app/api_server \
+		-v $(shell pwd)/soma_home:/soma_home \
+		-t ${DEVENV_IMAGE}
+run-dev:
+	docker run --rm -i -v $(shell pwd):/usr/src/project \
+		-e LOCAL_USER_ID=$(shell id -u ${USER}) \
+		-p 2010:2010 \
+		-p 2015:2015 \
+		-p 8000:8000 \
+		-v $(shell pwd)/api_server:/app/api_server \
 		-v $(shell pwd)/soma_home:/soma_home \
 		-t ${DEVENV_IMAGE} \
-		./manage.py runserver 0.0.0.0:8000
+		devserver
 migrate:
 	${ENV_RUN} ./api_server/manage.py makemigrations
 	${ENV_RUN} ./api_server/manage.py migrate

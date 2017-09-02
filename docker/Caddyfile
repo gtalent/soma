@@ -1,0 +1,27 @@
+
+# admin portal port
+0.0.0.0:2010 {
+
+	gzip
+	tls off
+
+	proxy / 127.0.0.1:8000 {
+		transparent
+		header_upstream Host localhost
+	}
+
+}
+
+# user portal port
+0.0.0.0:2015 {
+
+	gzip
+	tls off
+	root /app/client
+
+	proxy /api 127.0.0.1:8000 {
+		transparent
+		header_upstream Host localhost
+	}
+
+}

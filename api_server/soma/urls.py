@@ -6,13 +6,13 @@ from . import settings
 from . import views
 
 urlpatterns = [
-    url(r'^authenticate/', views.authenticate_view),
-    url(r'^auth_check/', views.auth_check),
+    url(r'^api/authenticate/', views.authenticate_view),
+    url(r'^api/auth_check/', views.auth_check),
     url(r'^admin/', admin.site.urls),
-] + static('static', document_root='static_root') + static('images', document_root=settings.MEDIA_ROOT + '/images')
+] + static('static', document_root='static_root') + static('api/images', document_root=settings.MEDIA_ROOT + '/images')
 
 for pkg in settings.SOMA_APPS:
-    urlpatterns.append(url(r'^' + pkg + '/', include(pkg + '.urls')))
+    urlpatterns.append(url(r'^api/' + pkg + '/', include(pkg + '.urls')))
 
 if settings.CHURCH_NAME is not None:
     admin.site.site_header = settings.CHURCH_NAME + ' Administration'

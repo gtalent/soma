@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 def authenticate_view(rqst):
     if rqst.method == 'POST':
-        creds = json.loads(rqst.body)
+        creds = json.loads(rqst.body.decode('utf-8'))
         username = creds['username']
         password = creds['password']
         user = authenticate(username=username, password=password)

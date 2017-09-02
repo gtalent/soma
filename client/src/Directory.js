@@ -2,6 +2,7 @@
 import axios from 'axios';
 import React from 'react';
 import {
+	Link,
 	Redirect,
 	Route,
 } from 'react-router-dom';
@@ -78,22 +79,30 @@ class DirectoryEntry extends React.Component {
 						<Button onClick={this.emailBtn} disabled={!this.state.emailAddress}>
 							Email
 						</Button>
-						<Button color='primary' href={'/person/' + this.state.personId + '/'}>
+						<Button
+							color='primary'
+							component={Link}
+							to={'/person/view/' + this.state.personId + '/'}
+						>
 							View
 						</Button>
-						<Button color='accent'>
+						<Button
+							color='accent'
+							component={Link}
+							to={'/person/edit/' + this.state.personId + '/'}
+						>
 							Edit
 						</Button>
 						<div style={{flex: '1 1 auto'}}/>
 						<IconButton
 							onClick={() => this.setState({expanded: !this.state.expanded})}
 							aria-expanded={this.state.expanded}
-							aria-label="Show more"
+							aria-label='Show more'
 						>
 							<ExpandMoreIcon/>
 						</IconButton>
 					</CardActions>
-					<Collapse in={this.state.expanded} transitionDuration="auto" unmountOnExit>
+					<Collapse in={this.state.expanded} transitionDuration='auto' unmountOnExit>
 						<CardContent>
 							{this.state.addressLine1}
 							<br/>
@@ -135,9 +144,7 @@ class DirectoryPage extends React.Component {
 		}).then(function(response) {
 			if (response.status === 200) {
 				dir.setState({people: response.data, page: props.page});
-				for (var i in dir.cancelTokens) {
-					dir.cancelTokens.splice(i, 1);
-				}
+				dir.cancelTokens.splice(dir.cancelTokens.indexOf(ct), 1);
 			}
 		}).catch((thrown) => {
 		});
@@ -145,8 +152,8 @@ class DirectoryPage extends React.Component {
 	}
 
 	componentWillUnmount(prevProps, prevState) {
-		for (var i in this.cancelTokens) {
-			this.cancelTokens[i].cancel();
+		for (let v of this.cancelTokens) {
+			v.cancel();
 		}
 		this.cancelTokens = [];
 	}
@@ -162,8 +169,8 @@ class DirectoryPage extends React.Component {
 					personId={m.person_id}
 					name={m.last_name + ', ' + m.first_name}
 					membershipStatus={m.membership_status}
-					addressLine1={m.address.address_line1}
-					addressLine2={m.address.address_line2}
+					addressLine1={m.address_line1}
+					addressLine2={m.address_line2}
 					cellNumber={m.cell_number}
 					homeNumber={m.home_number}
 					emailAddress={m.email_address}
@@ -206,8 +213,8 @@ class Directory extends React.Component {
 	}
 
 	updatePage = (p) => {
-		this.setState({page: p});
 		this.redirect = '/church_directory/page/' + p + '/';
+		this.setState({page: p});
 	};
 
 	render() {
@@ -215,9 +222,7 @@ class Directory extends React.Component {
 		if (this.redirect) {
 			let r = this.redirect;
 			this.redirect = undefined;
-			return (
-				<Redirect to={r}/>
-			);
+			return <Redirect to={r}/>;
 		} else {
 			return (
 				<div>

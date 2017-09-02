@@ -9,10 +9,12 @@ import './index.css';
 axios.defaults.xsrfCookieName = 'csrftoken';
 axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
-axios.post(HOST_ADDR + '/api/auth_check/').then(function() {
+axios.post(HOST_ADDR + '/api/auth_check/').then(() => {
 	ReactDOM.render(<App loggedIn={true}/>, document.getElementById('root'));
 	registerServiceWorker();
-}, function() {
-	ReactDOM.render(<App loggedIn={false}/>, document.getElementById('root'));
+}).catch((error) => {
+	if (error.response.status < 500) {
+		ReactDOM.render(<App loggedIn={false}/>, document.getElementById('root'));
+	}
 	registerServiceWorker();
 });

@@ -12,11 +12,13 @@ import {
 } from 'material-ui';
 import './App.css';
 import Directory from './Directory';
+import PersonEdit from './PersonEdit';
 import PersonView from './PersonView';
 import Login from './Login';
 
 
 class App extends React.Component {
+
 	constructor(props) {
 		super(props);
 		this.state = {loggedIn: props.loggedIn};
@@ -43,9 +45,14 @@ class App extends React.Component {
 							/>
 						</div>
 					)}/>
-					<Route path='/person/:personId/' component={({match}) => (
+					<Route path='/person/view/:personId/' component={({match}) => (
 						<div>
 							<PersonView personId={parseInt(match.params.personId, 10)}/>
+						</div>
+					)}/>
+					<Route path='/person/edit/:personId/' component={({match}) => (
+						<div>
+							<PersonEdit personId={parseInt(match.params.personId, 10)}/>
 						</div>
 					)}/>
 				</div>

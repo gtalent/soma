@@ -7,3 +7,4 @@ api_server/images
 api_server/static_root
 soma_home
 client/node_modules
+npm-debug.log
