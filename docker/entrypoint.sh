@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 
 # script from Deni Bertovic
 # https://denibertovic.com/posts/handling-permissions-with-docker-volumes/
@@ -17,12 +17,20 @@ if [[ $LOCAL_USER_ID != "" ]]; then
 	cmd_prefix="/usr/local/bin/gosu user"
 fi
 
+$cmd_prefix mkdir -p "$SOMA_HOME/log"
+
 if [[ "$@" == "" ]]; then
 	$cmd_prefix gunicorn -D soma.wsgi:application --log-level=info --bind=0.0.0.0:8000 \
-		--log-file="$SOMA_HOME/gunicorn.log"
+		--log-file="$SOMA_HOME/log/gunicorn.log"
+	pushd /app/client > /dev/null
+	$cmd_prefix npm run start &
+	popd > /dev/null
 	$cmd_prefix caddy -conf=/app/Caddyfile
 elif [[ "$@" == "devserver" ]]; then
 	$cmd_prefix python3 ./manage.py runserver 0.0.0.0:8000 &
+	pushd /app/client > /dev/null
+	$cmd_prefix npm run start &
+	popd > /dev/null
 	$cmd_prefix caddy -conf=/app/Caddyfile
 else
 	$cmd_prefix "$@"

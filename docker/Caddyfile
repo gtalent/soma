@@ -17,7 +17,12 @@
 
 	gzip
 	tls off
-	root /app/client
+	#root /app/client
+
+	proxy / 127.0.0.1:3000 {
+		transparent
+		header_upstream Host localhost
+	}
 
 	proxy /api 127.0.0.1:8000 {
 		transparent

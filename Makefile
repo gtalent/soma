@@ -11,8 +11,8 @@ run:
 		-e LOCAL_USER_ID=$(shell id -u ${USER}) \
 		-p 2010:2010 \
 		-p 2015:2015 \
-		-p 8000:8000 \
 		-v $(shell pwd)/api_server:/app/api_server \
+		-v $(shell pwd)/client:/app/client \
 		-v $(shell pwd)/soma_home:/soma_home \
 		-t ${DEVENV_IMAGE}
 run-dev:
@@ -20,8 +20,8 @@ run-dev:
 		-e LOCAL_USER_ID=$(shell id -u ${USER}) \
 		-p 2010:2010 \
 		-p 2015:2015 \
-		-p 8000:8000 \
 		-v $(shell pwd)/api_server:/app/api_server \
+		-v $(shell pwd)/client:/app/client \
 		-v $(shell pwd)/soma_home:/soma_home \
 		-t ${DEVENV_IMAGE} \
 		devserver
