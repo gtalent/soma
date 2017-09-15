@@ -8,14 +8,14 @@ from django.contrib.auth.decorators import login_required
 from django.template import loader
 import weasyprint
 from datetime import datetime
-from .models import Person, membership_status_int, membership_status_str, sex_str, PERSON_PICTURE_DIR
+from .models import Person, membership_status_int, membership_status_str, sex_str, is_member
 from soma.settings import CHURCH_NAME, SOMA_HOME, MEDIA_ROOT
 
 def _person_image_fetch(url):
-	prefix = 'image://'
-	if url.startswith(prefix):
-		url = 'file://' + os.path.abspath(MEDIA_ROOT + url[len(prefix):])
-	return weasyprint.default_url_fetcher(url)
+    prefix = 'image://'
+    if url.startswith(prefix):
+        url = 'file://' + os.path.abspath(MEDIA_ROOT + url[len(prefix):])
+    return weasyprint.default_url_fetcher(url)
 
 def _build_membership_filter(ms):
     filt = None
@@ -56,17 +56,55 @@ def _jsonify_person(person):
 @login_required
 def church_directory_pdf(rqst):
     if rqst.method == 'GET':
+        families = []
+        fam_dict = {}
         people = Person.objects.all().order_by('last_name', 'first_name')
         now = datetime.now()
         for p in people:
             p.membership_status = membership_status_str(p.membership_status)
             p.home_phone = _delimit_phone_number(p.home_phone)
             p.cell_phone = _delimit_phone_number(p.cell_phone)
+            # build families dict
+            fam_key = ''
+            fam_name = ''
+            if p.mother != None:
+                fam_key += str(p.mother.person_id)
+                fam_name = p.mother.last_name
+            if p.father != None:
+                fam_key += str(p.father.person_id) + ','
+                # allow father's name to supercede mothers if present
+                fam_name = p.father.last_name
+            if fam_key != '':
+                if not fam_key in fam_dict:
+                    parent_names = []
+                    member_fam = False
+                    if p.father != None and is_member(p.father.membership_status):
+                        parent_names.append(p.father.first_name)
+                        member_fam = True
+                    if p.mother != None and is_member(p.mother.membership_status):
+                        parent_names.append(p.mother.first_name)
+                        member_fam = True
+                    fam_dict[fam_key] = {
+                        'family': ' & '.join(parent_names) + ' ' + fam_name,
+                        'father': p.father,
+                        'mother': p.mother,
+                        'children': [],
+                        'member_family': member_fam,
+                        'all_children_members': True,
+                    }
+                    families.append(fam_dict[fam_key])
+                if not p.is_member():
+                    fam_dict[fam_key]['all_children_members'] = False
+                fam_dict[fam_key]['children'].append(p)
+        print(families)
+        # build directory
         t = loader.get_template(SOMA_HOME + '/templates/church_directory.html')
         c = {
             'people': people,
+            'families': families,
             'church_name': CHURCH_NAME,
             'month_name': now.strftime('%B'),
+            'day_of_month': now.day,
             'year': now.year
         }
         html_doc = t.render(c)

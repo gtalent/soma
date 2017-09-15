@@ -1,7 +1,29 @@
 
 from django.db import models
+from PIL import Image
 from django_resized import ResizedImageField
 from soma.settings import SOMA_HOME
+
+def _crop_image(path, cw, ch):
+    img = Image.open(path)
+    w, h = img.size
+    if cw < w:
+        mult = cw / w
+        w *= mult
+        h *= mult
+    img = img.resize((int(w), int(h)), Image.ANTIALIAS)
+    # crop if necessary
+    x, y = 0, 0
+    w, h = img.size
+    if w > cw:
+        diff = (w - cw) / 2
+        x += diff
+        w -= diff
+    if h > ch:
+        diff = (h - ch)
+        h -= diff
+    img = img.crop((x, y, w, h))
+    img.save(path)
 
 def _create_reverse_lookup(s):
     out = {}
@@ -10,6 +32,8 @@ def _create_reverse_lookup(s):
     return out
 
 PERSON_PICTURE_DIR = 'images/church_directory/person/pictures'
+PERSON_PICTURE_WIDTH = 360
+PERSON_PICTURE_HEIGHT = 230
 
 NON_MEMBER = 0
 ACTIVE_MEMBER = 1
@@ -41,8 +65,8 @@ def is_member(status):
         return True
     elif status == OUTOFAREA_MEMBER:
         return True
-    elif status == FORMER_MEMBER:
-        return True
+    else:
+        return False
 
 MALE = 0
 FEMALE = 1
@@ -92,10 +116,13 @@ class Person(models.Model):
     mother = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='mother_child', null=True, blank=True)
     spouse = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='person_spouse', null=True, blank=True)
     notes = models.TextField('notes', null=True, blank=True)
-    picture = ResizedImageField(size=[300, 260], crop=['middle', 'center'], upload_to=PERSON_PICTURE_DIR, null=True, blank=True)
+    picture = ResizedImageField(size=[PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT], crop=['middle', 'center'], upload_to=PERSON_PICTURE_DIR, null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'People'
+
+    def is_member(self):
+        return is_member(MEMBERSHIP_STATUS_REV[self.membership_status])
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
