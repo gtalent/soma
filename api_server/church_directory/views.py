@@ -64,7 +64,12 @@ def church_directory_pdf(rqst):
             p.membership_status = membership_status_str(p.membership_status)
             p.home_phone = _delimit_phone_number(p.home_phone)
             p.cell_phone = _delimit_phone_number(p.cell_phone)
-            # build families dict
+        # build families dict
+        children = Person.objects.all().order_by('last_name', 'birthday')
+        for p in children:
+            p.membership_status = membership_status_str(p.membership_status)
+            p.home_phone = _delimit_phone_number(p.home_phone)
+            p.cell_phone = _delimit_phone_number(p.cell_phone)
             fam_key = ''
             fam_name = ''
             if p.mother != None:
@@ -96,7 +101,6 @@ def church_directory_pdf(rqst):
                 if not p.is_member():
                     fam_dict[fam_key]['all_children_members'] = False
                 fam_dict[fam_key]['children'].append(p)
-        print(families)
         # build directory
         t = loader.get_template(SOMA_HOME + '/templates/church_directory.html')
         c = {
