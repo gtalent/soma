@@ -90,6 +90,9 @@ class Command(BaseCommand):
                     p.email_address = row['E-Mail']
                     p.address_line1 = row['Address']
                     p.address_line2 = row['Address Line 2']
+                    p.city = row['City']
+                    p.zipcode = row['Zip Code']
+                    p.province = row['State']
                     p.membership_status = member_status(row['Member Status'])
                     p.notes = row['Comments']
                     rel = row['Relationship']
