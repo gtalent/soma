@@ -1,6 +1,8 @@
 
-from django.db import models
+import datetime
+
 from PIL import Image
+from django.db import models
 from django_resized import ResizedImageField
 from soma.settings import SOMA_HOME
 
@@ -8,7 +10,7 @@ def _crop_image(path, cw, ch):
     img = Image.open(path)
     w, h = img.size
     if cw < w:
-        mult = cw / w
+        mult = float(cw) / float(w)
         w *= mult
         h *= mult
     img = img.resize((int(w), int(h)), Image.ANTIALIAS)
@@ -51,6 +53,10 @@ MEMBERSHIP_STATUS = (
     (DECEASED, 'Deceased'),
 )
 MEMBERSHIP_STATUS_REV = _create_reverse_lookup(MEMBERSHIP_STATUS)
+
+EVENT_BAPTISM = 'Baptism'
+EVENT_DEATH = 'Death'
+EVENT_WEDDING = 'Wedding'
 
 def membership_status_int(status):
     return MEMBERSHIP_STATUS_REV[status]
@@ -97,6 +103,34 @@ def sex_int(sex):
 
 # Create your models here.
 
+class EventType(models.Model):
+    type_id = models.AutoField('ID', primary_key=True)
+    name = models.CharField('Name', max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = 'Event Type'
+
+    def __str__(self):
+        return self.name
+
+class Event(models.Model):
+    event_id = models.AutoField('ID', primary_key=True)
+    event_type = models.ForeignKey('EventType', on_delete=models.CASCADE)
+    date = models.DateField(null=False, blank=False)
+    person = models.ForeignKey('Person', on_delete=models.CASCADE)
+
+    def event_age(self):
+        b = self.date
+        if b != None:
+            n = datetime.date.today()
+            d = n - b
+            return (d.days / 365) + (d.days / 365) * (1 / (365 * 4))
+        else:
+            return -1
+
+    def __str__(self):
+        return str(self.event_type) + ': ' + str(self.person)
+
 class Person(models.Model):
     person_id = models.AutoField('ID', primary_key=True)
     first_name = models.CharField('First Name', max_length=50)
@@ -123,6 +157,21 @@ class Person(models.Model):
 
     def is_member(self):
         return is_member(MEMBERSHIP_STATUS_REV[self.membership_status])
+
+    def age(self):
+        b = self.birthday
+        if b != None:
+            n = datetime.date.today()
+            d = n - b
+            return (d.days / 365) + (d.days / 365) * (1 / (365 * 4))
+        else:
+            return -1
+
+    def wedding(self):
+        et = EventType.objects.filter(name=EVENT_WEDDING)
+        w = Event.objects.filter(person=self, event_type=et)
+        if len(w) > 0:
+            return w[0].date
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name

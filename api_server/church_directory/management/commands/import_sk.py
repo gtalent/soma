@@ -11,9 +11,18 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 from django_resized import ResizedImageField
 from soma.settings import MEDIA_ROOT
-from church_directory.models import Person, sex_int, membership_status_str, NON_MEMBER, ACTIVE_MEMBER, HOMEBOUND_MEMBER, OUTOFAREA_MEMBER, FORMER_MEMBER, DECEASED, PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT, PERSON_PICTURE_DIR, MALE, _crop_image
+from church_directory.models import Event, EventType, Person, sex_int, membership_status_str
+from church_directory.models import NON_MEMBER, ACTIVE_MEMBER, HOMEBOUND_MEMBER, OUTOFAREA_MEMBER, FORMER_MEMBER, DECEASED
+from church_directory.models import PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT, PERSON_PICTURE_DIR, MALE, _crop_image
+from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_WEDDING
+
+EVENT_TYPES = {}
+
+for t in EventType.objects.all():
+    EVENT_TYPES[t.name] = t
 
 PICTURE_DIR = MEDIA_ROOT + '/' + PERSON_PICTURE_DIR
+BLANK_DATE = '  /  /    '
 
 def member_status(s):
     if s == 'Active Member':
@@ -27,9 +36,9 @@ def member_status(s):
     else:
         return NON_MEMBER
 
-def birthday(row):
+def parse_date(d):
     try:
-        d = row['Birth Date'].split('/')
+        d = d.split('/')
         month = int(d[0])
         day = int(d[1])
         year = int(d[2])
@@ -64,7 +73,8 @@ class Command(BaseCommand):
             i = 1
             for row in reader:
                 i += 1
-                if len(row) > 0:
+                sex = sex_int(row['Gender'])
+                if sex != None:
                     p = Person()
                     p.first_name = row['First Name']
                     p.middle_name = row['Middle Name']
@@ -74,7 +84,7 @@ class Command(BaseCommand):
                         p.marital_status = 2
                     else:
                         p.marital_status = 1
-                    p.sex = sex_int(row['Gender'])
+                    p.sex = sex
                     p.home_phone = fix_phone(row['Home Phone'])
                     p.cell_phone = fix_phone(row['Cell Phone'])
                     p.email_address = row['E-Mail']
@@ -83,34 +93,49 @@ class Command(BaseCommand):
                     p.membership_status = member_status(row['Member Status'])
                     p.notes = row['Comments']
                     rel = row['Relationship']
-                    p.birthday = birthday(row)
+                    p.birthday = parse_date(row['Birth Date'])
                     if i % 50 == 0:
                         sys.stdout.write('\rPerson: ' + str(i))
                         sys.stdout.flush()
-                    if p.sex != None:
-                        fam_name = row['Directory Name']
-                        if not fam_name in families:
-                            families[fam_name] = {
-                                'father': None,
-                                'mother': None,
-                                'children': [],
-                            }
-                        if rel == 'Son' or rel == 'Daughter':
-                            families[fam_name]['children'].append(p)
-                        elif p.sex == MALE:
+                    fam_name = row['Directory Name']
+                    if not fam_name in families:
+                        families[fam_name] = {
+                            'father': None,
+                            'mother': None,
+                            'children': [],
+                        }
+                    if rel == 'Son' or rel == 'Daughter':
+                        families[fam_name]['children'].append(p)
+                    elif rel == 'Spouse' or rel == 'head of household':
+                        if p.sex == MALE:
                             families[fam_name]['father'] = p
                         else:
                             families[fam_name]['mother'] = p
-                        p.save()
-                        src = join(data_dir, p.last_name + ', ' + p.first_name + '.jpg')
-                        try:
-                            dest = join(PICTURE_DIR, str(p.person_id) + '.jpg')
-                            shutil.copyfile(src, dest)
-                            _crop_image(dest, PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT)
-                        except IOError:
-                            continue
+                    p.save()
+                    # create Events
+                    for et in [
+                        ('Baptized Date', EVENT_BAPTISM),
+                        ('Deceased date', EVENT_DEATH),
+                        ('Wedding Date', EVENT_WEDDING),
+                    ]:
+                        dk = et[0]
+                        tk = et[1]
+                        bd = parse_date(row[dk])
+                        if bd != None:
+                            e = Event(person=p, event_type=EVENT_TYPES[tk], date=bd)
+                            e.save()
+                    # import picture
+                    src = join(data_dir, p.last_name + ', ' + p.first_name + '.jpg')
+                    try:
+                        dest = join(PICTURE_DIR, str(p.person_id) + '.jpg')
+                        shutil.copyfile(src, dest)
+                        _crop_image(dest, PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT)
                         p.picture = PERSON_PICTURE_DIR + '/' + str(p.person_id) + '.jpg'
                         p.save()
+                    except IOError:
+                        pass
+            sys.stdout.write('\rPerson: ' + str(i) + '\n')
+            sys.stdout.flush()
             i = 0
             for k in families:
                 f = families[k]
@@ -122,11 +147,5 @@ class Command(BaseCommand):
                     c.mother = f['mother']
                     c.save()
                     i += 1
-            sys.stdout.write("\r" + str(k))
+            sys.stdout.write('\rParent-child relationship: ' + str(i) + '\n')
             sys.stdout.flush()
-            print()
-    # father
-    # mother
-    # spouse
-    # notes
-    # birthday

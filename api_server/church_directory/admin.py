@@ -1,5 +1,5 @@
 from django.contrib import admin
-from church_directory.models import Person, MembershipStatusChange
+from church_directory.models import Event, EventType, Person, MembershipStatusChange
 
 # Register your models here.
 
@@ -10,4 +10,6 @@ class PersonAdmin(admin.ModelAdmin):
 	row_name.short_description = 'Name'
 	row_name.admin_order_field = 'last_name'
 
+admin.site.register(Event)
+admin.site.register(EventType)
 admin.site.register(Person, PersonAdmin)
