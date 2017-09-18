@@ -56,7 +56,19 @@ MEMBERSHIP_STATUS_REV = _create_reverse_lookup(MEMBERSHIP_STATUS)
 
 EVENT_BAPTISM = 'Baptism'
 EVENT_DEATH = 'Death'
+EVENT_DIVORCE = 'Divorce'
 EVENT_WEDDING = 'Wedding'
+EVENT_WIDOWED = 'Widowed'
+EVENT_JOINED_CHURCH = 'Joined Church'
+
+LIFE_EVENTS = [
+    EVENT_BAPTISM,
+    EVENT_DEATH,
+    EVENT_DIVORCE,
+    EVENT_JOINED_CHURCH,
+    EVENT_WEDDING,
+    EVENT_WIDOWED,
+]
 
 def membership_status_int(status):
     return MEMBERSHIP_STATUS_REV[status]
@@ -81,6 +93,7 @@ SEXES = (
     (MALE, 'Male'),
     (FEMALE, 'Female'),
 )
+SEXES_REV = _create_reverse_lookup(SEXES)
 
 SINGLE = 1
 MARRIED = 2
@@ -95,10 +108,10 @@ def sex_str(sex):
     return SEXES[sex][1]
 
 def sex_int(sex):
-    if sex == 'Male':
-        return MALE
-    elif sex == 'Female':
-        return FEMALE
+    try:
+        return SEXES_REV[sex]
+    except KeyError:
+        pass
 
 
 # Create your models here.

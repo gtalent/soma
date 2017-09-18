@@ -5,22 +5,16 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 import django.db.models.deletion
 
-from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_WEDDING
-
-default_event_types = [
-    EVENT_BAPTISM,
-    EVENT_DEATH,
-    EVENT_WEDDING,
-]
+from church_directory.models import LIFE_EVENTS
 
 def setup_event_types(apps, schema_editor):
     EventType = apps.get_model('church_directory', 'EventType')
-    for v in default_event_types:
+    for v in LIFE_EVENTS:
         EventType(name=v).save()
 
 def delete_event_types(apps, schema_editor):
     EventType = apps.get_model('church_directory', 'EventType')
-    for v in default_event_types:
+    for v in LIFE_EVENTS:
         EventType.objects.filter(name=v).delete()
 
 class Migration(migrations.Migration):

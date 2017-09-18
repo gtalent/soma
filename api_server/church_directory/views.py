@@ -44,6 +44,8 @@ def _jsonify_person(person):
         'home_number': _delimit_phone_number(person.home_phone),
         'cell_number': _delimit_phone_number(person.cell_phone),
         'email_address': person.email_address,
+        'city': person.city,
+        'province': person.province,
         'address_line1': person.address_line1,
         'address_line2': person.address_line2,
         'membership_status': membership_status_str(person.membership_status),
