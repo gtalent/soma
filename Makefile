@@ -13,6 +13,7 @@ run:
 		-p 2015:2015 \
 		-v $(shell pwd)/api_server:/app/api_server \
 		-v $(shell pwd)/client:/app/client \
+		--name soma \
 		-v $(shell pwd)/soma_home:/soma_home \
 		-t ${DEVENV_IMAGE}
 run-dev:
@@ -23,6 +24,7 @@ run-dev:
 		-v $(shell pwd)/api_server:/app/api_server \
 		-v $(shell pwd)/client:/app/client \
 		-v $(shell pwd)/soma_home:/soma_home \
+		--name soma \
 		-t ${DEVENV_IMAGE} \
 		devserver
 migrate:
