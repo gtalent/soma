@@ -121,6 +121,7 @@ class PersonView extends React.Component {
 							{this.buildRow('Home Phone', p.home_number)}
 							{this.buildRow('Cell Phone', p.cell_number)}
 							{this.buildRow('Email', p.email_address)}
+							{this.buildRow('City', p.city + ', ' + p.province)}
 							{this.buildRow('Address', [p.address_line1, p.address_line2])}
 							{this.buildRow('Birthday', p.birthday)}
 						</TableBody>

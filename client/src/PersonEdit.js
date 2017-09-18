@@ -135,12 +135,20 @@ class PersonEdit extends React.Component {
 								<TableCell>Contact</TableCell>
 								<TableCell>
 									<div>
+										{this.createTextField('Address Line 1', 'address_line1')}
+										{this.createTextField('Address Line 2', 'address_line2')}
+									</div>
+									<div>
+										{this.createTextField('City', 'city')}
+										{this.createTextField('State/Province', 'province')}
+									</div>
+									<div>
 										{this.createTextField('Home Phone', 'home_number')}
 										{this.createTextField('Cell Phone', 'cell_number')}
 									</div>
-									{this.createTextField('Address Line 1', 'address_line1')}
-									{this.createTextField('Address Line 2', 'address_line2')}
-									<div>{this.createTextField('Email', 'email_address')}</div>
+									<div>
+										{this.createTextField('Email', 'email_address')}
+									</div>
 								</TableCell>
 							</TableRow>
 						</TableBody>

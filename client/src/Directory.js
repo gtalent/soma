@@ -20,7 +20,7 @@ import {
 } from 'material-ui';
 import { HOST_ADDR } from './consts';
 
-const ENTRIES_PER_PAGE = 5;
+const ENTRIES_PER_PAGE = 50;
 
 class DirectoryEntry extends React.Component {
 
@@ -33,6 +33,8 @@ class DirectoryEntry extends React.Component {
 			membershipStatus: props.membershipStatus,
 			addressLine1: props.addressLine1,
 			addressLine2: props.addressLine2,
+			city: props.city,
+			province: props.province,
 			cellNumber: props.cellNumber,
 			homeNumber: props.homeNumber,
 			emailAddress: props.emailAddress,
@@ -107,6 +109,8 @@ class DirectoryEntry extends React.Component {
 							{this.state.addressLine1}
 							<br/>
 							{this.state.addressLine2}
+							<br/>
+							{this.state.city + ', ' + this.state.province}
 							<Divider/>
 							{this.field('Cell', this.state.cellNumber)}
 							{this.field('Home', this.state.homeNumber)}
@@ -162,21 +166,22 @@ class DirectoryPage extends React.Component {
 		let cards = [];
 		for (let i in this.state.people) {
 			let m = this.state.people[i];
-			let id = (i + 1) * (this.state.page + 1);
 			cards.push(
 				<DirectoryEntry
-					key={id}
+					key={m.person_id}
 					personId={m.person_id}
 					name={m.last_name + ', ' + m.first_name}
 					membershipStatus={m.membership_status}
 					addressLine1={m.address_line1}
 					addressLine2={m.address_line2}
+					city={m.city}
+					province={m.province}
 					cellNumber={m.cell_number}
 					homeNumber={m.home_number}
 					emailAddress={m.email_address}
 				/>
 			);
-			cards.push(<br key={id + this.state.people.length}/>);
+			cards.push(<br key={m.person_id + 0.5}/>);
 		}
 		return (
 			<div>
