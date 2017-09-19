@@ -7,6 +7,7 @@ import shutil
 import sys
 from os.path import join
 
+from django.db.models import Q
 from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 from django_resized import ResizedImageField
@@ -14,7 +15,7 @@ from soma.settings import MEDIA_ROOT
 from church_directory.models import Event, EventType, RoleAssignment, Role, Person, sex_int
 from church_directory.models import NON_MEMBER, MEMBER
 from church_directory.models import PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT, PERSON_PICTURE_DIR, MALE, _crop_image
-from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_WEDDING
+from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_LEFT_CHURCH, EVENT_WEDDING
 
 EVENT_TYPES = {}
 
@@ -72,6 +73,10 @@ def add_role(person, name):
         rt = Role(name=name)
         rt.save()
     r = RoleAssignment(role_type=rt, person=person)
+    etf = Q(event_type=EVENT_TYPES[EVENT_LEFT_CHURCH]) | Q(event_type=EVENT_TYPES[EVENT_DEATH])
+    events = Event.objects.filter(person=person).filter(etf).order_by('date')
+    if len(events):
+        r.end_date = events[0].date
     r.save()
 
 class Command(BaseCommand):
@@ -142,15 +147,11 @@ class Command(BaseCommand):
                     # setup associations that cannot be performed before the
                     # person is in the database
 
-                    # setup roles
-                    roles = row['Leadership'].split('; ')
-                    for role in roles:
-                        if role != '':
-                            add_role(p, role)
                     # create Events
                     for et in [
                         ('Baptized Date', EVENT_BAPTISM),
                         ('Deceased date', EVENT_DEATH),
+                        ('Date Removed', EVENT_LEFT_CHURCH),
                         ('Wedding Date', EVENT_WEDDING),
                     ]:
                         dk = et[0]
@@ -159,6 +160,11 @@ class Command(BaseCommand):
                         if bd != None:
                             e = Event(person=p, event_type=EVENT_TYPES[tk], date=bd)
                             e.save()
+                    # setup roles
+                    roles = row['Leadership'].split('; ')
+                    for role in roles:
+                        if role != '':
+                            add_role(p, role)
                     # import picture
                     src = join(data_dir, p.last_name + ', ' + p.first_name + '.jpg')
                     try:

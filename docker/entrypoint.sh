@@ -20,7 +20,7 @@ fi
 $cmd_prefix mkdir -p "$SOMA_HOME/log"
 
 if [[ "$@" == "" ]]; then
-	$cmd_prefix gunicorn -D soma.wsgi:application --log-level=info --bind=0.0.0.0:8000 \
+	gunicorn -D soma.wsgi:application --log-level=info --bind=0.0.0.0:8000 \
 		--log-file="$SOMA_HOME/log/gunicorn.log"
 	pushd /app/client > /dev/null
 	$cmd_prefix npm run start &

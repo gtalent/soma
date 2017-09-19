@@ -125,8 +125,11 @@ class RoleAssignment(models.Model):
 
     def __str__(self):
         s = str(self.role_type) + ': ' + str(self.person)
-        if self.start_date != None:
-            s += ' (' + str(self.start_date.year)
+        if self.start_date != None or self.end_date != None:
+            if self.start_date != None:
+                s += ' (' + str(self.start_date.year)
+            else:
+                s += ' (?'
             if self.end_date != None:
                 s += ' - ' + str(self.end_date.year)
             s += ')'
