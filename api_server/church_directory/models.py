@@ -126,7 +126,10 @@ class RoleAssignment(models.Model):
     def __str__(self):
         s = str(self.role_type) + ': ' + str(self.person)
         if self.start_date != None:
-            s += ' (' + str(self.start_date.year) + ')'
+            s += ' (' + str(self.start_date.year)
+            if self.end_date != None:
+                s += ' - ' + str(self.end_date.year)
+            s += ')'
         return s
 
 class EventType(models.Model):
