@@ -13,7 +13,7 @@ def setup_event_types(apps, schema_editor):
 
 def delete_event_types(apps, schema_editor):
     for v in LIFE_EVENTS:
-        EventType.objects.filter(name=v).delete()
+        EventType.objects.get(name=v).delete()
 
 class Migration(migrations.Migration):
 

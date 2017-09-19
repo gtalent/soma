@@ -174,10 +174,10 @@ class Person(models.Model):
             return -1
 
     def wedding(self):
-        et = EventType.objects.filter(name=EVENT_WEDDING)
-        w = Event.objects.filter(person=self, event_type=et)
-        if len(w) > 0:
-            return w[0].date
+        et = EventType.objects.get(name=EVENT_WEDDING)
+        w = Event.objects.get(person=self, event_type=et)
+        if w != None:
+            return w.date
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name

@@ -180,8 +180,8 @@ def person(rqst):
             person_id = data['person_id']
         except KeyError:
             return HttpResponse(status=404)
-        q = Person.objects.filter(person_id=person_id)
-        if len(q) > 0:
-            out = _jsonify_person(q[0])
+        p = Person.objects.get(person_id=person_id)
+        if p != None:
+            out = _jsonify_person(p)
             return HttpResponse(json.dumps(out, indent=3), content_type='application/json')
     return HttpResponse(status=404)
