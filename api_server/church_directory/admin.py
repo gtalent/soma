@@ -1,5 +1,5 @@
 from django.contrib import admin
-from church_directory.models import Event, EventType, Person, MembershipStatusChange
+from church_directory.models import Event, EventType, Person, RoleAssignment, Role, MembershipStatusChange
 
 # Register your models here.
 
@@ -13,3 +13,5 @@ class PersonAdmin(admin.ModelAdmin):
 admin.site.register(Event)
 admin.site.register(EventType)
 admin.site.register(Person, PersonAdmin)
+admin.site.register(RoleAssignment)
+admin.site.register(Role)

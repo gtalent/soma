@@ -11,7 +11,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 from django_resized import ResizedImageField
 from soma.settings import MEDIA_ROOT
-from church_directory.models import Event, EventType, Person, sex_int, membership_status_str
+from church_directory.models import Event, EventType, RoleAssignment, Role, Person, sex_int
 from church_directory.models import NON_MEMBER, MEMBER
 from church_directory.models import PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT, PERSON_PICTURE_DIR, MALE, _crop_image
 from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_WEDDING
@@ -65,6 +65,15 @@ def fix_phone(number):
         out = None
     return out
 
+def add_role(person, name):
+    try:
+        rt = Role.objects.get(name=name)
+    except Role.DoesNotExist:
+        rt = Role(name=name)
+        rt.save()
+    r = RoleAssignment(role_type=rt, person=person)
+    r.save()
+
 class Command(BaseCommand):
     help = 'Imports a CSV file of Persons'
 
@@ -75,6 +84,7 @@ class Command(BaseCommand):
         families = {}
         # clear Persons
         Person.objects.all().delete()
+        Role.objects.all().delete()
         # import new Persons
         path = options['in'][0]
         data_dir = os.path.dirname(os.path.realpath(path))
@@ -128,6 +138,15 @@ class Command(BaseCommand):
                         else:
                             families[fam_name]['mother'] = p
                     p.save()
+
+                    # setup associations that cannot be performed before the
+                    # person is in the database
+
+                    # setup roles
+                    roles = row['Leadership'].split('; ')
+                    for role in roles:
+                        if role != '':
+                            add_role(p, role)
                     # create Events
                     for et in [
                         ('Baptized Date', EVENT_BAPTISM),

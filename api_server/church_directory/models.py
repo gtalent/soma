@@ -49,7 +49,8 @@ MEMBERSHIP_STATUS_REV = _create_reverse_lookup(MEMBERSHIP_STATUS)
 EVENT_BAPTISM = 'Baptism'
 EVENT_DEATH = 'Death'
 EVENT_DIVORCE = 'Divorce'
-EVENT_JOINED_CHURCH = 'Joined Church'
+EVENT_JOINED_CHURCH = 'Added to Membership'
+EVENT_LEFT_CHURCH = 'Removed from Membership'
 EVENT_WEDDING = 'Wedding'
 EVENT_WIDOWED = 'Widowed'
 
@@ -58,6 +59,7 @@ LIFE_EVENTS = [
     EVENT_DEATH,
     EVENT_DIVORCE,
     EVENT_JOINED_CHURCH,
+    EVENT_LEFT_CHURCH,
     EVENT_WEDDING,
     EVENT_WIDOWED,
 ]
@@ -103,6 +105,29 @@ def sex_int(sex):
 
 
 # Create your models here.
+
+class Role(models.Model):
+    type_id = models.AutoField('ID', primary_key=True)
+    name = models.CharField('Name', max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+class RoleAssignment(models.Model):
+    role_id = models.AutoField('ID', primary_key=True)
+    role_type = models.ForeignKey('Role', on_delete=models.CASCADE)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    person = models.ForeignKey('Person', on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Role Assignment'
+
+    def __str__(self):
+        s = str(self.role_type) + ': ' + str(self.person)
+        if self.start_date != None:
+            s += ' (' + str(self.start_date.year) + ')'
+        return s
 
 class EventType(models.Model):
     type_id = models.AutoField('ID', primary_key=True)
