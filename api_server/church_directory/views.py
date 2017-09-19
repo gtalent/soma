@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import loader
 import weasyprint
 from datetime import datetime
-from .models import Event, Person, membership_status_int, membership_status_str, sex_str, is_member
+from .models import Event, Person, membership_status_int, membership_status_str, sex_str
 from soma.settings import CHURCH_NAME, SOMA_HOME, MEDIA_ROOT
 
 def _person_image_fetch(url):
@@ -20,7 +20,7 @@ def _person_image_fetch(url):
 def _build_membership_filter(ms):
     filt = None
     for i in ms:
-        q = Q(membership_status=membership_status_int(i))
+        q = Q(member=membership_status_int(i))
         if filt == None:
             filt = q
         else:
@@ -48,7 +48,7 @@ def _jsonify_person(person):
         'province': person.province,
         'address_line1': person.address_line1,
         'address_line2': person.address_line2,
-        'membership_status': membership_status_str(person.membership_status),
+        'membership_status': membership_status_str(person.member),
         'homebound': person.homebound,
         'out_of_area': person.out_of_area,
         'father': person.father.person_id if person.father else None,
@@ -65,7 +65,6 @@ def church_directory_pdf(rqst):
         people = Person.objects.all().order_by('last_name', 'first_name')
         now = datetime.now()
         for p in people:
-            p.membership_status = membership_status_str(p.membership_status)
             p.home_phone = _delimit_phone_number(p.home_phone)
             p.cell_phone = _delimit_phone_number(p.cell_phone)
         # build families dict
@@ -73,7 +72,6 @@ def church_directory_pdf(rqst):
         events = Event.objects.all().order_by('date')
         for p in children:
             if p.age() > -1 and p.age() < 18:
-                p.membership_status = membership_status_str(p.membership_status)
                 p.home_phone = _delimit_phone_number(p.home_phone)
                 p.cell_phone = _delimit_phone_number(p.cell_phone)
                 fam_key = ''
@@ -89,10 +87,10 @@ def church_directory_pdf(rqst):
                     if not fam_key in fam_dict:
                         parent_names = []
                         member_fam = False
-                        if p.father != None and is_member(p.father.membership_status):
+                        if p.father != None and p.father.member:
                             parent_names.append(p.father.first_name)
                             member_fam = True
-                        if p.mother != None and is_member(p.mother.membership_status):
+                        if p.mother != None and p.mother.member:
                             parent_names.append(p.mother.first_name)
                             member_fam = True
                         fam_dict[fam_key] = {
@@ -104,7 +102,7 @@ def church_directory_pdf(rqst):
                             'all_children_members': True,
                         }
                         families.append(fam_dict[fam_key])
-                    if not p.is_member():
+                    if not p.member:
                         fam_dict[fam_key]['all_children_members'] = False
                     fam_dict[fam_key]['children'].append(p)
         # build directory

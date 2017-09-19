@@ -37,8 +37,8 @@ PERSON_PICTURE_DIR = 'images/church_directory/person/pictures'
 PERSON_PICTURE_WIDTH = 360
 PERSON_PICTURE_HEIGHT = 230
 
-NON_MEMBER = 0
-MEMBER = 1
+NON_MEMBER = False
+MEMBER = True
 
 MEMBERSHIP_STATUS = (
     (NON_MEMBER, 'Non-member'),
@@ -69,12 +69,6 @@ def membership_status_int(status):
 
 def membership_status_str(status):
     return MEMBERSHIP_STATUS[status][1]
-
-def is_member(status):
-    if status == MEMBER:
-        return True
-    else:
-        return False
 
 MALE = 0
 FEMALE = 1
@@ -182,7 +176,7 @@ class Person(models.Model):
     zipcode = models.CharField('Zip Code', max_length=10, null=True, blank=True)
     homebound = models.BooleanField()
     out_of_area = models.BooleanField()
-    membership_status = models.IntegerField(choices=MEMBERSHIP_STATUS)
+    member = models.BooleanField(choices=MEMBERSHIP_STATUS)
     father = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='father_child', null=True, blank=True)
     mother = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='mother_child', null=True, blank=True)
     spouse = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='person_spouse', null=True, blank=True)
@@ -191,9 +185,6 @@ class Person(models.Model):
 
     class Meta:
         verbose_name_plural = 'People'
-
-    def is_member(self):
-        return is_member(MEMBERSHIP_STATUS_REV[self.membership_status])
 
     def age(self):
         b = self.birthday

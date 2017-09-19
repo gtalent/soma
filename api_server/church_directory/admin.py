@@ -4,7 +4,7 @@ from church_directory.models import Event, EventType, Person, RoleAssignment, Ro
 # Register your models here.
 
 class PersonAdmin(admin.ModelAdmin):
-	list_display = ('first_name', 'last_name', 'membership_status', 'birthday', 'sex', 'marital_status')
+	list_display = ('first_name', 'last_name', 'member', 'birthday', 'sex', 'marital_status')
 	def row_name(self, p):
 		return p.last_name + ', ' + p.first_name
 	row_name.short_description = 'Name'

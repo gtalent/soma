@@ -119,7 +119,7 @@ class Command(BaseCommand):
                     p.zipcode = row['Zip Code']
                     p.province = row['State']
                     ms = row['Member Status']
-                    p.membership_status = member_status(ms)
+                    p.member = member_status(ms)
                     p.homebound = homebound(ms)
                     p.out_of_area = out_of_area(ms)
                     p.notes = row['Comments']
