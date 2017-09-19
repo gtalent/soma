@@ -26,11 +26,17 @@ class DirectoryEntry extends React.Component {
 
 	constructor(props) {
 		super(props);
+		let msMod = '';
+		if (props.outOfArea) {
+			msMod = ' - Out-of-Area';
+		} else if (props.homebound) {
+			msMod = ' - Homebound';
+		}
 		this.state = {
 			expanded: false,
 			personId: props.personId,
 			name: props.name,
-			membershipStatus: props.membershipStatus,
+			membershipStatus: props.membershipStatus + msMod,
 			addressLine1: props.addressLine1,
 			addressLine2: props.addressLine2,
 			city: props.city,
@@ -172,6 +178,8 @@ class DirectoryPage extends React.Component {
 					personId={m.person_id}
 					name={m.last_name + ', ' + m.first_name}
 					membershipStatus={m.membership_status}
+					homebound={m.homebound}
+					outOfArea={m.out_of_area}
 					addressLine1={m.address_line1}
 					addressLine2={m.address_line2}
 					city={m.city}

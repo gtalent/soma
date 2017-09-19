@@ -12,7 +12,7 @@ from django.core.files import File
 from django_resized import ResizedImageField
 from soma.settings import MEDIA_ROOT
 from church_directory.models import Event, EventType, Person, sex_int, membership_status_str
-from church_directory.models import NON_MEMBER, ACTIVE_MEMBER, HOMEBOUND_MEMBER, OUTOFAREA_MEMBER, FORMER_MEMBER, DECEASED
+from church_directory.models import NON_MEMBER, MEMBER
 from church_directory.models import PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT, PERSON_PICTURE_DIR, MALE, _crop_image
 from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_WEDDING
 
@@ -26,15 +26,25 @@ BLANK_DATE = '  /  /    '
 
 def member_status(s):
     if s == 'Active Member':
-        return ACTIVE_MEMBER
+        return MEMBER
     elif s == 'Homebound Member':
-        return HOMEBOUND_MEMBER
+        return MEMBER
     elif s == 'Out-of-the-area Member':
-        return OUTOFAREA_MEMBER
-    elif s == 'Former Member':
-        return FORMER_MEMBER
+        return MEMBER
     else:
         return NON_MEMBER
+
+def homebound(s):
+    if s == 'Homebound Member':
+        return True
+    else:
+        return False
+
+def out_of_area(s):
+    if s == 'Out-of-the-area Member':
+        return True
+    else:
+        return False
 
 def parse_date(d):
     try:
@@ -93,7 +103,10 @@ class Command(BaseCommand):
                     p.city = row['City']
                     p.zipcode = row['Zip Code']
                     p.province = row['State']
-                    p.membership_status = member_status(row['Member Status'])
+                    ms = row['Member Status']
+                    p.membership_status = member_status(ms)
+                    p.homebound = homebound(ms)
+                    p.out_of_area = out_of_area(ms)
                     p.notes = row['Comments']
                     rel = row['Relationship']
                     p.birthday = parse_date(row['Birth Date'])

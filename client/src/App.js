@@ -37,9 +37,7 @@ class App extends React.Component {
 						<div>
 							<Directory membershipStatus={
 									[
-										'Active Member',
-										'Homebound Member',
-										'Out-of-area Member',
+										'Member',
 									]
 								}
 							/>

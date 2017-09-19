@@ -38,28 +38,20 @@ PERSON_PICTURE_WIDTH = 360
 PERSON_PICTURE_HEIGHT = 230
 
 NON_MEMBER = 0
-ACTIVE_MEMBER = 1
-HOMEBOUND_MEMBER = 2
-OUTOFAREA_MEMBER = 3
-FORMER_MEMBER = 4
-DECEASED = 5
+MEMBER = 1
 
 MEMBERSHIP_STATUS = (
     (NON_MEMBER, 'Non-member'),
-    (ACTIVE_MEMBER, 'Active Member'),
-    (HOMEBOUND_MEMBER, 'Homebound Member'),
-    (OUTOFAREA_MEMBER, 'Out-of-area Member'),
-    (FORMER_MEMBER, 'Former Member'),
-    (DECEASED, 'Deceased'),
+    (MEMBER, 'Member'),
 )
 MEMBERSHIP_STATUS_REV = _create_reverse_lookup(MEMBERSHIP_STATUS)
 
 EVENT_BAPTISM = 'Baptism'
 EVENT_DEATH = 'Death'
 EVENT_DIVORCE = 'Divorce'
+EVENT_JOINED_CHURCH = 'Joined Church'
 EVENT_WEDDING = 'Wedding'
 EVENT_WIDOWED = 'Widowed'
-EVENT_JOINED_CHURCH = 'Joined Church'
 
 LIFE_EVENTS = [
     EVENT_BAPTISM,
@@ -77,11 +69,7 @@ def membership_status_str(status):
     return MEMBERSHIP_STATUS[status][1]
 
 def is_member(status):
-    if status == ACTIVE_MEMBER:
-        return True
-    elif status == HOMEBOUND_MEMBER:
-        return True
-    elif status == OUTOFAREA_MEMBER:
+    if status == MEMBER:
         return True
     else:
         return False
@@ -161,6 +149,8 @@ class Person(models.Model):
     city = models.CharField('City', max_length=50, null=True, blank=True)
     province = models.CharField('Province', max_length=50, null=True, blank=True)
     zipcode = models.CharField('Zip Code', max_length=10, null=True, blank=True)
+    homebound = models.BooleanField()
+    out_of_area = models.BooleanField()
     membership_status = models.IntegerField(choices=MEMBERSHIP_STATUS)
     father = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='father_child', null=True, blank=True)
     mother = models.ForeignKey('Person', on_delete=models.SET_NULL, related_name='mother_child', null=True, blank=True)

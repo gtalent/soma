@@ -49,6 +49,8 @@ def _jsonify_person(person):
         'address_line1': person.address_line1,
         'address_line2': person.address_line2,
         'membership_status': membership_status_str(person.membership_status),
+        'homebound': person.homebound,
+        'out_of_area': person.out_of_area,
         'father': person.father.person_id if person.father else None,
         'mother': person.mother.person_id if person.mother else None,
     }
