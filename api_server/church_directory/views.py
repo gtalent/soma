@@ -106,8 +106,6 @@ def church_directory_pdf(rqst):
                         families.append(fam_dict[fam_key])
                     if not p.is_member():
                         fam_dict[fam_key]['all_children_members'] = False
-                    if p.last_name == 'Echevarria':
-                        print(fam_dict[fam_key])
                     fam_dict[fam_key]['children'].append(p)
         # build directory
         t = loader.get_template(SOMA_HOME + '/templates/church_directory.html')
