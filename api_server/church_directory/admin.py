@@ -11,7 +11,7 @@ class PersonAdmin(admin.ModelAdmin):
 	row_name.admin_order_field = 'last_name'
 
 class RoleAssignmentAdmin(admin.ModelAdmin):
-	list_display = ('person', 'role_type', 'start_date', 'end_date')
+	list_display = ('person', 'role_name', 'start_date', 'end_date')
 
 admin.site.register(Event)
 admin.site.register(EventType)

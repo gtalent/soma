@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import loader
 import weasyprint
 from datetime import datetime
-from .models import Event, Person, membership_status_int, membership_status_str, sex_str
+from .models import Event, Person, RoleAssignment, membership_status_int, membership_status_str, sex_str
 from soma.settings import CHURCH_NAME, SOMA_HOME, MEDIA_ROOT
 
 def _person_image_fetch(url):
@@ -62,6 +62,7 @@ def church_directory_pdf(rqst):
     if rqst.method == 'GET':
         families = []
         fam_dict = {}
+        roles = RoleAssignment.objects.all().order_by('person')
         people = Person.objects.all().order_by('last_name', 'first_name')
         now = datetime.now()
         for p in people:
@@ -111,6 +112,7 @@ def church_directory_pdf(rqst):
             'people': people,
             'families': families,
             'events': events,
+            'roles': roles,
             'church_name': CHURCH_NAME,
             'month_name': now.strftime('%B'),
             'day_of_month': now.day,

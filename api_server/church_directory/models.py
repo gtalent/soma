@@ -117,6 +117,12 @@ class RoleAssignment(models.Model):
     class Meta:
         verbose_name = 'Role Assignment'
 
+    def role_name(self):
+        return self.role_type.name
+
+    def ongoing(self):
+        return self.end_date == None
+
     def __str__(self):
         s = str(self.role_type) + ': ' + str(self.person)
         if self.start_date != None or self.end_date != None:
