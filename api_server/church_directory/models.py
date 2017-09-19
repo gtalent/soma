@@ -132,6 +132,7 @@ class RoleAssignment(models.Model):
 class EventType(models.Model):
     type_id = models.AutoField('ID', primary_key=True)
     name = models.CharField('Name', max_length=50, unique=True)
+    builtin = models.BooleanField()
 
     class Meta:
         verbose_name = 'Event Type'

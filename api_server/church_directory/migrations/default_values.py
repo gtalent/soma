@@ -9,7 +9,7 @@ from church_directory.models import EventType, LIFE_EVENTS
 
 def setup_event_types(apps, schema_editor):
     for v in LIFE_EVENTS:
-        EventType(name=v).save()
+        EventType(name=v, builtin=True).save()
 
 def delete_event_types(apps, schema_editor):
     for v in LIFE_EVENTS:
