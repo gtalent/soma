@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('church_directory', 'default_values'),
+        ('church_directory', '0019_event_event_type'),
     ]
 
     operations = [

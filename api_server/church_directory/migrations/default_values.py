@@ -18,7 +18,7 @@ def delete_event_types(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('church_directory', '0019_event_event_type'), # required for setup_event_types
+        ('church_directory', '0009_auto_20170919_2234'), # required for setup_event_types
     ]
 
     operations = [
