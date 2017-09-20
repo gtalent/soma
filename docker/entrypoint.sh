@@ -23,7 +23,7 @@ if [[ "$@" == "" ]]; then
 	gunicorn -D soma.wsgi:application --log-level=info --bind=0.0.0.0:8000 \
 		--log-file="$SOMA_HOME/log/gunicorn.log"
 	pushd /app/client > /dev/null
-	#$cmd_prefix npm run start &
+	$cmd_prefix npm run start &
 	popd > /dev/null
 	$cmd_prefix caddy -conf=/app/Caddyfile
 elif [[ "$@" == "devserver" ]]; then

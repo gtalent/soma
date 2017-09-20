@@ -62,7 +62,7 @@ def church_directory_pdf(rqst):
     if rqst.method == 'GET':
         families = []
         fam_dict = {}
-        roles = RoleAssignment.objects.all().order_by('person')
+        roles = RoleAssignment.objects.all().order_by('person__last_name', 'person__first_name')
         people = Person.objects.all().order_by('last_name', 'first_name')
         now = datetime.now()
         for p in people:
