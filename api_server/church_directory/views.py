@@ -107,7 +107,7 @@ def church_directory_pdf(rqst):
                         fam_dict[fam_key]['all_children_members'] = False
                     fam_dict[fam_key]['children'].append(p)
         # build directory
-        t = loader.get_template(SOMA_HOME + '/templates/church_directory.html')
+        t = loader.get_template(SOMA_HOME + '/templates/church_directory/church_directory.html')
         c = {
             'people': people,
             'families': families,
