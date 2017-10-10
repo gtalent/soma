@@ -6,6 +6,7 @@ import {
 	Redirect,
 	Route,
 } from 'react-router-dom';
+import Avatar from 'material-ui/Avatar';
 import Button from 'material-ui/Button';
 import Card, {
 	CardActions,
@@ -20,7 +21,7 @@ import {
 } from 'material-ui';
 import { HOST_ADDR } from './consts';
 
-const ENTRIES_PER_PAGE = 50;
+const ENTRIES_PER_PAGE = 25;
 
 class DirectoryEntry extends React.Component {
 
@@ -44,6 +45,7 @@ class DirectoryEntry extends React.Component {
 			cellNumber: props.cellNumber,
 			homeNumber: props.homeNumber,
 			emailAddress: props.emailAddress,
+			imageUrl: props.imageUrl,
 		};
 	}
 
@@ -74,6 +76,11 @@ class DirectoryEntry extends React.Component {
 			<div>
 				<Card>
 					<CardHeader
+						avatar={
+							this.state.imageUrl ? <Avatar
+								src={'/api/' + this.state.imageUrl}
+							/> : null
+						}
 						title={this.state.name}
 						subheader={this.state.membershipStatus}
 					/>
@@ -187,6 +194,7 @@ class DirectoryPage extends React.Component {
 					cellNumber={m.cell_number}
 					homeNumber={m.home_number}
 					emailAddress={m.email_address}
+					imageUrl={m.image_url}
 				/>
 			);
 			cards.push(<br key={m.person_id + 0.5}/>);
@@ -225,55 +233,46 @@ class Directory extends React.Component {
 		});
 	}
 
-	updatePage = (p) => {
-		this.redirect = '/church_directory/page/' + p + '/';
-		this.setState({page: p});
-	};
-
 	render() {
 		let btnStyle = {margin: 20};
-		if (this.redirect) {
-			let r = this.redirect;
-			this.redirect = undefined;
-			return <Redirect to={r}/>;
-		} else {
-			return (
-				<div>
-					<Route exact path='/church_directory/page/' component={() => (
-						<Redirect to="/church_directory/page/0/"/>
-					)}/>
-					<Route path='/church_directory/page/:page/' component={({match}) => {
-						let page = parseInt(match.params.page, 10);
-						return (
-							<div style={{maxWidth: '700px', margin: '0 auto'}}>
-								<div style={{display: 'flex', justifyContent: 'center'}}>
-									<Button raised
-										style={btnStyle}
-										color='primary'
-										disabled={page < 1}
-										onClick={(event) => this.updatePage(page - 1)}
-									>
-										Prev
-									</Button>
-									<Button raised
-										style={btnStyle}
-										color='primary'
-										disabled={page >= this.state.pages}
-										onClick={(event) => this.updatePage(page + 1)}
-									>
-										Next
-									</Button>
-								</div>
-								<DirectoryPage
-									membershipStatus={this.state.membershipStatus}
-									page={page}
-								/>
+		return (
+			<div>
+				<Route exact path='/church_directory/page/' component={() => (
+					<Redirect to="/church_directory/page/0/"/>
+				)}/>
+				<Route path='/church_directory/page/:page/' component={({match}) => {
+					let page = parseInt(match.params.page, 10);
+					return (
+						<div style={{maxWidth: '700px', margin: '0 auto'}}>
+							<div style={{display: 'flex', justifyContent: 'center'}}>
+								<Button raised
+									style={btnStyle}
+									color='primary'
+									disabled={page < 1}
+									component={Link}
+									to={'/church_directory/page/' + (page - 1) + '/'}
+								>
+									Prev
+								</Button>
+								<Button raised
+									style={btnStyle}
+									color='primary'
+									disabled={page >= this.state.pages}
+									component={Link}
+									to={'/church_directory/page/' + (page + 1) + '/'}
+								>
+									Next
+								</Button>
 							</div>
-						);
-					}}/>
-				</div>
-			);
-		}
+							<DirectoryPage
+								membershipStatus={this.state.membershipStatus}
+								page={page}
+							/>
+						</div>
+					);
+				}}/>
+			</div>
+		);
 	}
 
 };
