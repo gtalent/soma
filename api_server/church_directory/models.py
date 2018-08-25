@@ -64,6 +64,12 @@ LIFE_EVENTS = [
     EVENT_WIDOWED,
 ]
 
+CLEARANCE_BACKGROUND_CHECK = 'Background Check'
+
+CLEARANCE_TYPES = [
+    CLEARANCE_BACKGROUND_CHECK,
+]
+
 def membership_status_int(status):
     return MEMBERSHIP_STATUS_REV[status]
 
@@ -99,6 +105,26 @@ def sex_int(sex):
 
 
 # Create your models here.
+
+class ClearanceType(models.Model):
+    type_id = models.AutoField('ID', primary_key=True)
+    name = models.CharField('Name', max_length=50, unique=True)
+    duration = models.DurationField(null=True, blank=True)
+    builtin = models.BooleanField()
+
+    class Meta:
+        verbose_name = 'Clearance Type'
+
+    def __str__(self):
+        return self.name
+
+class Clearance(models.Model):
+    clearance_type = models.ForeignKey('ClearanceType', on_delete=models.CASCADE)
+    person = models.ForeignKey('Person', on_delete=models.CASCADE)
+    date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return str(self.clearance_type) + ': ' + str(self.person)
 
 class Role(models.Model):
     type_id = models.AutoField('ID', primary_key=True)
@@ -201,6 +227,12 @@ class Person(models.Model):
             return (d.days / 365) + (d.days / 365) * (1 / (365 * 4))
         else:
             return -1
+
+    def date_joined(self):
+        et = EventType.objects.get(name=EVENT_JOINED_CHURCH)
+        w = Event.objects.get(person=self, event_type=et)
+        if w != None:
+            return w.date
 
     def wedding(self):
         et = EventType.objects.get(name=EVENT_WEDDING)

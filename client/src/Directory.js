@@ -59,6 +59,16 @@ class DirectoryEntry extends React.Component {
 		}
 	}
 
+	namelessField = (val) => {
+		if (val) {
+			return (
+				<div>
+					{val}
+				</div>
+			);
+		}
+	}
+
 	emailBtn = (name, val) => {
 		window.location.href = 'mailto:' + this.state.emailAddress;
 	};
@@ -119,11 +129,9 @@ class DirectoryEntry extends React.Component {
 					</CardActions>
 					<Collapse in={this.state.expanded} transitionDuration='auto' unmountOnExit>
 						<CardContent>
-							{this.state.addressLine1}
-							<br/>
-							{this.state.addressLine2}
-							<br/>
-							{this.state.city + ', ' + this.state.province}
+							{this.namelessField(this.state.addressLine1)}
+							{this.namelessField(this.state.addressLine2)}
+							{this.namelessField([this.state.city, this.state.province].join(', '))}
 							<Divider/>
 							{this.field('Cell', this.state.cellNumber)}
 							{this.field('Home', this.state.homeNumber)}

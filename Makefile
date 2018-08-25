@@ -6,6 +6,8 @@ endif
 
 build:
 	docker build . -t ${DEVENV_IMAGE}
+clean-build:
+	docker build --no-cache . -t ${DEVENV_IMAGE}
 run:
 	docker run --rm -i -v $(shell pwd):/usr/src/project \
 		-e LOCAL_USER_ID=$(shell id -u ${USER}) \
@@ -28,8 +30,8 @@ run-dev:
 		-t ${DEVENV_IMAGE} \
 		devserver
 migrate:
-	${ENV_RUN} ./api_server/manage.py makemigrations
-	${ENV_RUN} ./api_server/manage.py migrate
+	${ENV_RUN} ./manage.py makemigrations
+	${ENV_RUN} ./manage.py migrate
 
 devenv:
 	docker run -d -v $(shell pwd):/usr/src/project \

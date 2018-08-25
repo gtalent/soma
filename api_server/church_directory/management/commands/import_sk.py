@@ -12,10 +12,13 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.files import File
 from django_resized import ResizedImageField
 from soma.settings import MEDIA_ROOT
-from church_directory.models import Event, EventType, RoleAssignment, Role, Person, sex_int
+from church_directory.models import Clearance, ClearanceType, Event, EventType, RoleAssignment, Role, Person, sex_int
 from church_directory.models import NON_MEMBER, MEMBER
 from church_directory.models import PERSON_PICTURE_WIDTH, PERSON_PICTURE_HEIGHT, PERSON_PICTURE_DIR, MALE, _crop_image
-from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_LEFT_CHURCH, EVENT_WEDDING
+from church_directory.models import EVENT_BAPTISM, EVENT_DEATH, EVENT_JOINED_CHURCH, EVENT_LEFT_CHURCH, EVENT_WEDDING
+from church_directory.models import CLEARANCE_BACKGROUND_CHECK
+
+CT_BGCHCK = ClearanceType.objects.get(name=CLEARANCE_BACKGROUND_CHECK)
 
 EVENT_TYPES = {}
 
@@ -24,6 +27,12 @@ for t in EventType.objects.all():
 
 PICTURE_DIR = MEDIA_ROOT + '/' + PERSON_PICTURE_DIR
 BLANK_DATE = '  /  /    '
+
+# increase SQLite performace for mass import
+from django.db import connection
+cursor = connection.cursor()
+cursor.execute('PRAGMA temp_store = MEMORY;')
+cursor.execute('PRAGMA synchronous=OFF')
 
 def member_status(s):
     if s == 'Active Member':
@@ -151,6 +160,7 @@ class Command(BaseCommand):
                     for et in [
                         ('Baptized Date', EVENT_BAPTISM),
                         ('Deceased date', EVENT_DEATH),
+                        ('Date Joined', EVENT_JOINED_CHURCH),
                         ('Date Removed', EVENT_LEFT_CHURCH),
                         ('Wedding Date', EVENT_WEDDING),
                     ]:
@@ -160,6 +170,10 @@ class Command(BaseCommand):
                         if bd != None:
                             e = Event(person=p, event_type=EVENT_TYPES[tk], date=bd)
                             e.save()
+                    # create background checks
+                    bgchk = parse_date(row['Bckg Check'])
+                    if bgchk != None:
+                        Clearance(clearance_type=CT_BGCHCK, person=p, date=bgchk).save()
                     # setup roles
                     roles = row['Leadership'].split('; ')
                     for role in roles:

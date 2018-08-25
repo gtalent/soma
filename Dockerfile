@@ -17,7 +17,7 @@ RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/dow
     chmod +x /usr/local/bin/gosu
 
 # install Caddy
-RUN curl -o caddy.tar.gz https://caddyserver.com/download/linux/amd64
+RUN curl -o caddy.tar.gz "https://caddyserver.com/download/linux/amd64?license=personal&telemetry=off"
 RUN tar xf caddy.tar.gz caddy
 RUN mv caddy /usr/local/bin/caddy
 RUN rm caddy.tar.gz
@@ -31,11 +31,16 @@ WORKDIR /app
 # don't require rerunning this part
 ADD api_server/requirements.txt /app/api_server/
 RUN apt-get install -y python3-cairocffi libpango1.0
-RUN pip3 install -r api_server/requirements.txt
+RUN pip3  install -r api_server/requirements.txt
 ADD api_server /app/api_server
 ADD client /app/client
 
+WORKDIR /app/client
+RUN npm install
+RUN npm run-script build
+
 WORKDIR /app/api_server
+RUN python3 manage.py makemigrations
 RUN python3 manage.py migrate
 RUN python3 manage.py collectstatic --noinput
 
