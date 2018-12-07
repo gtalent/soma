@@ -1,12 +1,12 @@
 import axios from 'axios';
 import React from 'react';
 import { HOST_ADDR } from './consts';
-import Button from 'material-ui/Button';
+import Button from '@material-ui/core/Button';
 import {
 	Divider,
 	Paper,
 	TextField,
-} from 'material-ui';
+} from '@material-ui/core';
 
 
 class Login extends React.Component {
@@ -61,7 +61,7 @@ class Login extends React.Component {
 								  onChange={this.handlePasswordChange}
 					/>
 					<Divider/>
-					<Button raised
+					<Button raised='true'
 					              style={{width: style.width * 0.75}}
 									  color='primary'
 					              onClick={this.loginClick}

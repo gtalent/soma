@@ -6,19 +6,18 @@ import {
 	Redirect,
 	Route,
 } from 'react-router-dom';
-import Avatar from 'material-ui/Avatar';
-import Button from 'material-ui/Button';
-import Card, {
-	CardActions,
-	CardContent,
-	CardHeader,
-} from 'material-ui/Card';
-import IconButton from 'material-ui/IconButton';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import Collapse from 'material-ui/transitions/Collapse';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
+import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Collapse from '@material-ui/core/Collapse';
 import {
 	Divider,
-} from 'material-ui';
+} from '@material-ui/core';
 import { HOST_ADDR } from './consts';
 
 const ENTRIES_PER_PAGE = 25;
@@ -94,7 +93,7 @@ class DirectoryEntry extends React.Component {
 						title={this.state.name}
 						subheader={this.state.membershipStatus}
 					/>
-					<CardActions disableActionSpacing>
+					<CardActions disableActionSpacing={true}>
 						<Button onClick={this.cellPhoneBtn} disabled={!this.state.cellNumber}>
 							Call Cell
 						</Button>
@@ -112,7 +111,7 @@ class DirectoryEntry extends React.Component {
 							View
 						</Button>
 						<Button
-							color='accent'
+							color='secondary'
 							component={Link}
 							to={'/person/edit/' + this.state.personId + '/'}
 						>
@@ -253,7 +252,7 @@ class Directory extends React.Component {
 					return (
 						<div style={{maxWidth: '700px', margin: '0 auto'}}>
 							<div style={{display: 'flex', justifyContent: 'center'}}>
-								<Button raised
+								<Button raised='true'
 									style={btnStyle}
 									color='primary'
 									disabled={page < 1}
@@ -262,7 +261,7 @@ class Directory extends React.Component {
 								>
 									Prev
 								</Button>
-								<Button raised
+								<Button raised='true'
 									style={btnStyle}
 									color='primary'
 									disabled={page >= this.state.pages}

@@ -5,11 +5,11 @@ import {
 	Redirect,
 	Route,
 } from 'react-router-dom';
-import createMuiTheme from 'material-ui/styles/theme';
+import { createMuiTheme } from '@material-ui/core/styles';
 import {
 	MuiThemeProvider,
 	Toolbar,
-} from 'material-ui';
+} from '@material-ui/core';
 import './App.css';
 import Directory from './Directory';
 import PersonEdit from './PersonEdit';
@@ -60,11 +60,9 @@ class App extends React.Component {
 		}
 		return (
 			<Router>
-				<MuiThemeProvider theme={createMuiTheme()}>
-					<div>
-						{appRoot}
-					</div>
-				</MuiThemeProvider>
+				<div>
+					{appRoot}
+				</div>
 			</Router>
 		);
 	}

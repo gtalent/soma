@@ -4,12 +4,11 @@ import React from 'react';
 import {
 	Link,
 } from 'react-router-dom';
-import Button from 'material-ui/Button';
-import Table, {
-	TableBody,
-	TableCell,
-	TableRow,
-} from 'material-ui/Table';
+import Button from '@material-ui/core/Button';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 import { HOST_ADDR } from './consts';
 
 class PersonView extends React.Component {
@@ -97,19 +96,19 @@ class PersonView extends React.Component {
 					}
 				</div>
 				<div style={{minWidth: '350px'}}>
-					<Button raised style={btnStyle} onClick={this.cellPhoneBtn} disabled={!p.cell_number}>
+					<Button raised='true' style={btnStyle} onClick={this.cellPhoneBtn} disabled={!p.cell_number}>
 						Call Cell
 					</Button>
-					<Button raised style={btnStyle} onClick={this.homePhoneBtn} disabled={!p.home_number}>
+					<Button raised='true' style={btnStyle} onClick={this.homePhoneBtn} disabled={!p.home_number}>
 						Call Home
 					</Button>
-					<Button raised style={btnStyle} onClick={this.emailBtn} disabled={!p.email_address}>
+					<Button raised='true' style={btnStyle} onClick={this.emailBtn} disabled={!p.email_address}>
 						Email
 					</Button>
 					<Button
-						raised
+						raised='true'
 						style={btnStyle}
-						color='accent'
+						color='secondary'
 						component={Link}
 						to={'/person/edit/' + this.state.personId + '/'}
 					>

@@ -1,13 +1,12 @@
 
 import axios from 'axios';
 import React from 'react';
-import Button from 'material-ui/Button';
-import Table, {
-	TableBody,
-	TableCell,
-	TableRow,
-} from 'material-ui/Table';
-import TextField from 'material-ui/TextField';
+import Button from '@material-ui/core/Button';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
+import TextField from '@material-ui/core/TextField';
 import { HOST_ADDR } from './consts';
 
 class PersonEdit extends React.Component {
@@ -115,7 +114,7 @@ class PersonEdit extends React.Component {
 				</div>
 				<div style={{minWidth: '350px'}}>
 					<div>
-						<Button raised disabled style={{margin: 5}} color='primary'>
+						<Button raised='true' disabled={true} style={{margin: 5}} color='primary'>
 							Save
 						</Button>
 					</div>

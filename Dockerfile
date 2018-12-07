@@ -31,7 +31,7 @@ WORKDIR /app
 # don't require rerunning this part
 ADD api_server/requirements.txt /app/api_server/
 RUN apt-get install -y python3-cairocffi libpango1.0
-RUN pip3  install -r api_server/requirements.txt
+RUN pip3 install -r api_server/requirements.txt
 ADD api_server /app/api_server
 ADD client /app/client
 
